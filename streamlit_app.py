@@ -19,7 +19,7 @@ with tab1:
 
 with tab2:
     st.header('소방 안전 지도')
-    data = pd.read_csv("서울시 소방서 위치정보.csv", encoding='utf-8')
+    data = pd.read_csv("github\서울시 소방서 위치정보.csv", encoding='utf-8')
     m = folium.Map(location=[37.5665, 126.9780], zoom_start=12)
 
     # 소방서 위치 마커 추가
