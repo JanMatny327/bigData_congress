@@ -17,13 +17,22 @@ with tab1:
 
 with tab2:
     st.header('소방 안전 지도')
-    # 위도와 경도를 활용하여 지도 이미지를 사이트 안에 송출
-    data = pd.DataFrame({
-        'latitude': [37.7749, 34.0522, 40.7128],
-        'longitude': [-122.4194, -118.2437, -74.0060]
-    })
-    # 맵 이미지 송출
-    st.map(data)
+    data = pd.read_csv("서울시 소방서 위치정보.csv", encoding='utf-8')
+    m = folium.Map(location=[37.5665, 126.9780], zoom_start=12)
+
+    # 소방서 위치 마커 추가
+    for i in data.index:
+        name = data.loc[i, '서ㆍ센터명']
+        lat = data.loc[i, '위도']
+        lon = data.loc[i, '경도']
+        folium.Marker(
+            location=[lat, lon],
+            popup=name,
+            icon=folium.Icon(color='red', icon='info-sign')
+        ).add_to(m)
+
+    # st_folium으로 지도 출력
+    st_data = sf.st_folium(m, width=1000, height=500)
 
 with tab3:
     st.header('To Do Safe Your Mission!')
