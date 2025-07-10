@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import folium
 import streamlit_folium as sf
 
 st.title('To Do Safe')
