@@ -2,6 +2,17 @@ import streamlit as st
 import pandas as pd
 import folium
 import streamlit_folium as sf
+import time
+
+if "loading_done" not in st.session_state:
+    st.session_state.loading_done = False
+
+if not st.session_state.loading_done:
+    with st.spinner('일개미들의 작업을 로딩 중입니다...'):
+        loading = st.image("LogoVideo.gif", width=600)
+        time.sleep(2.5)
+        loading.empty()
+        st.session_state.loading_done = True
 
 st.title('To Do Safe')
 st.set_page_config(layout="wide")
@@ -17,9 +28,16 @@ with tab1:
         '\n시민들의 소방안전에 대한 경각심을 깨워주고 점검하는 습관을 들일 수 있게 도와주는 사이트입니다.' +
         '\n집안에서 발생할 수 있는 사건들을 점검하며 미션을 클리어하고 포인트를 흭득하세요!')
 
+    st.header('소방 안전 지도 : 주변 소방서 위치 및 과거 사고 이력을 확인해 당신의 안전을 지키세요.')
+    # 클릭시 내용 보여주는 
+    with st.expander('소방 안전 지도란?'):
+        st.write('소방 안전 지도란?' +
+        '\n시민들이 주변의 있는 소방서를 빠르게 확인하여 사고를 줄일 수 있는 지도입니다.' +
+        '\n또한 과거의 사고 정보을 확인하여 안전사고를 미리 예방할 수 있습니다.')
+
 with tab2:
     st.header('소방 안전 지도')
-    data = pd.read_csv("bigData_congress/서울시 소방서 위치정보.csv", encoding='utf-8')
+    data = pd.read_csv("서울시 소방서 위치정보.csv", encoding='utf-8')
     m = folium.Map(location=[37.5665, 126.9780], zoom_start=12)
 
     # 소방서 위치 마커 추가
@@ -41,12 +59,12 @@ with tab3:
     st.write("제작 예정")
     
 # 웹 로고
-logoUrl = "Logo.png"
+logoUrl = "TDSlogo.png"
 logo = st.logo(logoUrl)
 st.html("""
   <style>
     [alt=Logo] {
-      height: 4rem;
+      height: 4rem!important;
     }
   </style>
         """)
