@@ -69,5 +69,3 @@ st.html("""
   </style>
         """)
 
-# 웹 사이트 사이드 바
-search = st.sidebar.text_input('검색할 내용을 입력하세요.')
