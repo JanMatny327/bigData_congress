@@ -5,18 +5,18 @@ import streamlit_folium as sf
 import time
 import datetime as dt
 
-if "loading_done" not in st.session_state:
-    st.session_state.loading_done = False
+if "loading_done" not in st.session_state: # 만약 로딩 완료 상태가 비어있다면
+    st.session_state.loading_done = False # False로 초기화
 
-if not st.session_state.loading_done:
-    with st.spinner('일개미들의 작업을 로딩 중입니다...'):
-        loading = st.image("LogoVideo.gif", width=600)
-        time.sleep(2.5)
-        loading.empty()
-        st.session_state.loading_done = True
+if not st.session_state.loading_done: # 로딩 완료 상태가 아니라면
+    with st.spinner('일개미들의 작업을 로딩 중입니다...'): # 로딩 중이라는 스핀 글자 띄움
+        loading = st.image("LogoVideo.gif", width=600) # gif 재생
+        time.sleep(2.5) # 2.5초 동안 기다림
+        loading.empty() # 이미지 삭제
+        st.session_state.loading_done = True # 로딩 완료 상태 True로 만듬
 
-st.title('To Do Safe')
-st.set_page_config(layout="wide")
+st.title('To Do Safe') # 제목 설정
+st.set_page_config(layout="wide") # 레이아웃 wide로 설정
 
 # 웹 사이트 탭
 tab1, tab2, tab3 = st.tabs(['TDS 사이트란?', '소방 안전 지도', 'To Do Safe Your Mission!'])
