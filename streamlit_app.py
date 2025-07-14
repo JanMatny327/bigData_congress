@@ -58,6 +58,7 @@ with tab2:
 def go_to(page):
     st.session_state.current_page = page
 
+# 페이지 미션 확인, 미션 지정 등 다양한 역할 수행
 def mission_page(mission, mission_num):
     key = f"mission_done_{mission_num}"
     if key not in st.session_state:
