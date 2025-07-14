@@ -54,9 +54,78 @@ with tab2:
     # st_folium으로 지도 출력
     st_data = sf.st_folium(m, width=1000, height=500)
 
+# 페이지 이동 함수
+def go_to(page):
+    st.session_state.current_page = page
+
+def mission_page(mission, mission_num):
+    key = f"mission_done_{mission_num}"
+    if key not in st.session_state:
+        st.session_state[key] = False
+
+    st.header("미션 제목 : " + mission["name"])
+    st.write("미션 내용 : " + mission["detail"])
+
+    if st.button("홈으로 돌아가기"):
+        go_to("home")
+
+    if st.session_state[key]:
+        st.success("이미 완료한 미션입니다! 포인트가 지급되었어요.")
+        return
+
+    if mission["id"] == "photo":
+        uploaded = st.file_uploader("사진 업로드", type=["jpg", "png"])
+        if uploaded:
+            st.session_state[key] = True
+            st.success("사진 업로드 완료! 포인트 지급!!")
+
+    elif mission["id"] == "quiz":
+        answer = st.radio(mission["detail"], mission["options"], key=f"radio_{mission_num}")
+        if st.button(f"제출_{mission_num}"):
+            if answer == mission["answer"]:
+                st.session_state[key] = True
+                st.success("정답! 포인트 지급!!")
+            else:
+                st.error("오답! 다시 시도해보세요.")
+
+    elif mission["id"] == "action":
+        if st.button(f"네 해봤어요!_{mission_num}"):
+            st.session_state[key] = True
+            st.success("포인트 지급!!")
+
+    
 with tab3:
-    st.header('To Do Safe Your Mission!')
-    st.write("제작 예정")
+    missions = [
+        {"id":"photo","name":"소화기 사진 업로드!","detail":"가정 내 소화기를 찾아 사진을 업로드 해주세요."},
+        {"id":"photo","name":"소방 안전 빅데이터 사이트 접속!","detail":"소방 안전 빅데이터 사이트에 접속 후 스크린샷을 찍어 올려주세요."},
+        {"id":"photo","name":"TDS 사이트 접속!","detail":"TDS 사이트에 접속한 사진을 스크린샷을 찍어 올려주세요."},
+        {"id":"quiz", "name":"소방서 퀴즈!", "detail":"위급한 상황이 일어났을 때 어디로 신고해야 될까요?", "answer":"119","options":["119", "112", "1190"]},
+        {"id":"quiz", "name":"소화기 사용 퀴즈!", "detail":"소화기를 사용할 때 가장 먼저 빼야하는 부분은?", "answer":"안전핀",
+         "options":["안구핀", "안전핀", "안경핀"]},
+        {"id":"quiz", "name":"화재 퀴즈!", "detail":"화재가 난 건물에서 다른 사람에게 위험을 알리는데 사용하는 소리 장치는?", "answer":"화재경보기",
+         "options":["대피소", "스프링쿨러", "화재경보기"]},
+        {"id":"action", "name":"멀티탭 확인하기", "detail":"사용하지 않는 멀티탭이 있는지 확인해보세요!"},
+        {"id":"action", "name":"소방서 확인하기", "detail":"우리 주변에 있는 소방서의 위치를 확인해보세요!"},
+        {"id":"action", "name":"가스 밸브 확인하기", "detail":"가스 밸브가 잠겨져 있는지 확인하세요!"}
+    ]
+
+    seed = int(dt.date.today().strftime("%Y%m%d"))
+    random.seed(seed)
+    daily_missions = random.sample(missions, 3)
+
+    if "current_page" not in st.session_state:
+        st.session_state.current_page = "home"
+
+    if st.session_state.current_page == "home":
+        st.header('미션 리스트')
+        for i, ms in enumerate(daily_missions, 1):
+            if st.button(ms["name"]):
+                go_to(f"missionPage{i}")
+        st.write("모든 미션은 10포인트가 주어집니다!")
+
+    elif st.session_state.current_page.startswith("missionPage"):
+        idx = int(st.session_state.current_page[-1]) - 1
+        mission_page(daily_missions[idx], idx + 1)
     
 # 웹 로고
 logoUrl = "TDSlogo.png"
