@@ -142,27 +142,29 @@ if st.session_state.logged_in:
                 address = data.loc[i, '소방서주소']
                 number = data.loc[i,'전화번호']
                 url = data.loc[i, '소방서 이미지 주소']
-                image_url = f"{url}" 
+                image_url = f"{url}"  # 또는 웹 링크: f"https://example.com/images/{name}.jpg"
 
                 # HTML 팝업 구성
                 popup_html = f"""
-                    <div style=width:"200px">
+                <div style=width:"200px">
                     <b>소방서 명:</b> {name}<br>
                     <b>소방서 주소:</b> {address}<br>
                     <b>소방서 전화번호:</b> {number}<br>
-                    <img src="{image_url}" width="250px">
+                    <img src="{image_url}" width="300px">
                 </div>
                 """
                 tooltip = name
                 popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
-                popup = folium.Popup(folium.IFrame(popup_html, width=270, height=300), max_width=300)
-    
-                folium.Marker(
-                    location=[lat, lon],
-                    tooltip=tooltip,
-                    popup=popup,
-                    icon=folium.Icon(color='blue', icon='markers')
-                ).add_to(m)
+                popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
+            
+            folium.Marker(
+                location=[lat, lon],
+                tooltip=tooltip,
+                popup=popup,
+                icon=folium.Icon(color='blue', icon='markers')
+            ).add_to(m)
+        
+
 
             # st_folium으로 지도 출력
             st_data = sf.st_folium(m, width=1920, height=600)
