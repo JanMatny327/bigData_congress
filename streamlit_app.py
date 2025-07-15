@@ -5,7 +5,6 @@ import streamlit_folium as sf
 import time
 import datetime as dt
 import random
-import PIL from image
 
 # --- 세션 상태 초기화 ---
 if "loading_done" not in st.session_state:
