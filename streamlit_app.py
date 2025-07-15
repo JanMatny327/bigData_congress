@@ -154,16 +154,16 @@ if st.session_state.logged_in:
                     <img src="{image_url}" width="250px">
                 </div>
                 """
-            tooltip = name
-            popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
-            popup = folium.Popup(folium.IFrame(popup_html, width=270, height=300), max_width=300)
+                tooltip = name
+                popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
+                popup = folium.Popup(folium.IFrame(popup_html, width=270, height=300), max_width=300)
     
-            folium.Marker(
-                location=[lat, lon],
-                tooltip=tooltip,
-                popup=popup,
-                icon=folium.Icon(color='blue', icon='markers')
-            ).add_to(m)
+                folium.Marker(
+                    location=[lat, lon],
+                    tooltip=tooltip,
+                    popup=popup,
+                    icon=folium.Icon(color='blue', icon='markers')
+                ).add_to(m)
 
             # st_folium으로 지도 출력
             st_data = sf.st_folium(m, width=1920, height=600)
