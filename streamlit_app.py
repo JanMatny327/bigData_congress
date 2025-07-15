@@ -5,21 +5,6 @@ import streamlit_folium as sf
 import time
 import datetime as dt
 import random
-import sys
-import pprint
-
-print("====== sys.path ======")
-pprint.pprint(sys.path)
-print("======================")
-
-try:
-    import PIL
-    print("====== PIL 경로 ======")
-    print(PIL.__file__)
-    print("======================")
-except Exception as e:
-    print("PIL import 실패:", e)
-
 
 # --- 세션 상태 초기화 ---
 if "loading_done" not in st.session_state:
