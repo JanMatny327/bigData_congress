@@ -30,7 +30,7 @@ if "new_password_input" not in st.session_state:
 # --- 로딩 스크린 ---
 if not st.session_state.loading_done:
     with st.spinner('일개미들의 작업을 로딩 중입니다...'):
-        loading = st.image("https://github.com/JanMatny327/bigData_congress/LogoVideo.gif", width=600)
+        loading = st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/LogoVideo.gif", width=600)
         time.sleep(2.5)
         loading.empty()
         st.session_state.loading_done = True
@@ -41,7 +41,7 @@ st.title('To Do Safe')
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
-    st.image("https://github.com/JanMatny327/bigData_congress/TDSlogo.png", width=150) # 로고를 사이드바 상단에 배치
+    st.image("https://github.com/JanMatny327/bigData_congress/main/TDSlogo.png", width=150) # 로고를 사이드바 상단에 배치
     st.markdown("""
         <style>
             [alt=Logo] {
