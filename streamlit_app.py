@@ -172,25 +172,22 @@ if st.session_state.logged_in:
         except Exception as e:
             st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
 
-    # 페이지 이동 함수
-    def go_to(page):
-        st.session_state.current_page = page
+     # ✅ 사용자 세션 초기화
+    if "username" not in st.session_state:
+        st.session_state.username = "guest"
 
-    # 페이지 미션 확인, 미션 지정 등 다양한 역할 수행
+    # ✅ 미션 완료 여부 체크 함수
     def mission_page(mission, mission_num):
-        key = f"mission_done_{mission_num}_{st.session_state.username}" # 사용자별 미션 완료 상태 저장
+        key = f"mission_done_{mission_num}_{st.session_state.username}"  # 사용자별 완료 여부 저장
+
         if key not in st.session_state:
             st.session_state[key] = False
 
         st.header("미션 제목 : " + mission["name"])
         st.write("미션 내용 : " + mission["detail"])
 
-        # 현재 미션의 고유 키를 기반으로 "홈으로 돌아가기" 버튼 생성
-        if st.button("홈으로 돌아가기", key=f"back_home_btn_{mission_num}"):
-            go_to("home")
-
         if st.session_state[key]:
-            st.success("이미 완료한 미션입니다! 포인트가 지급되었어요.")
+            st.success("이미 완료한 미션입니다!")
             return
 
         if mission["id"] == "photo":
@@ -199,27 +196,30 @@ if st.session_state.logged_in:
                 st.balloons()
                 time.sleep(0.5)
                 st.session_state[key] = True
-                st.success("사진 업로드 완료! 포인트 지급!!")
+                st.success("관리자가 검토 중입니다. 검토 후 포인트가 지급될 예정입니다.")
 
         elif mission["id"] == "quiz":
             answer = st.radio(mission["detail"], mission["options"], key=f"radio_{mission_num}")
-            if st.button(f"제출_{mission_num}", key=f"submit_quiz_{mission_num}"):
+            if st.button(f"제출", key=f"submit_quiz_{mission_num}"):
                 if answer == mission["answer"]:
                     st.balloons()
                     time.sleep(0.5)
                     st.session_state[key] = True
-                    st.success("정답! 포인트 지급!!")
+                    st.success("관리자가 검토 중입니다. 검토 후 포인트가 지급될 예정입니다.")
                 else:
                     st.error("오답! 다시 시도해보세요.")
-
+    
         elif mission["id"] == "action":
-            if st.button(f"네 해봤어요!_{mission_num}", key=f"action_done_{mission_num}"):
+            if st.button(f"네 해봤어요!", key=f"action_done_{mission_num}"):
                 st.balloons()
                 time.sleep(0.5)
                 st.session_state[key] = True
-                st.success("포인트 지급!!")
-
+                st.success("관리자가 검토 중입니다. 검토 후 포인트가 지급될 예정입니다.")
+    
+    
+    
     with tab3:
+        # 미션 리스트
         missions = [
             {"id":"photo","name":"소화기 사진 업로드!","detail":"가정 내 소화기를 찾아 사진을 업로드 해주세요."},
             {"id":"photo","name":"소방 안전 빅데이터 사이트 접속!","detail":"소방 안전 빅데이터 사이트에 접속 후 스크린샷을 찍어 올려주세요."},
@@ -246,26 +246,24 @@ if st.session_state.logged_in:
             {"id":"action", "name":"소방서 확인하기", "detail":"우리 주변에 있는 소방서의 위치를 확인해보세요!"},
             {"id":"action", "name":"가스 밸브 확인하기", "detail":"가스 밸브가 잠겨져 있는지 확인하세요!"}
         ]
-
+    
+        # 오늘의 미션 5개 무작위 선택
         seed = int(dt.date.today().strftime("%Y%m%d"))
         random.seed(seed)
         daily_missions = random.sample(missions, 5)
-
-        if "current_page" not in st.session_state:
-            st.session_state.current_page = "home"
-
-        if st.session_state.current_page == "home":
-            st.header('미션 리스트')
-            for i, ms in enumerate(daily_missions, 1):
-                # 미션 버튼에 고유한 key 추가
-                if st.button(ms["name"], key=f"mission_btn_{i}"):
-                    go_to(f"missionPage{i}")
-            st.write("모든 미션은 10포인트가 주어집니다!")
-
-        elif st.session_state.current_page.startswith("missionPage"):
-            idx = int(st.session_state.current_page[-1]) - 1
-            mission_page(daily_missions[idx], idx + 1)
-
+    
+        st.header('🔥 오늘의 미션 리스트')
+    
+        mission_names = [ms["name"] for ms in daily_missions]
+        selected_mission = st.selectbox("수행할 미션을 선택하세요", mission_names)
+    
+        st.write("💡 모든 미션을 완료하면 각각 10포인트가 지급됩니다!")
+        st.write("\n")
+    
+        if selected_mission != "-- 미션을 선택하세요 --":
+            selected_index = mission_names.index(selected_mission)
+            mission_page(daily_missions[selected_index], selected_index + 1)
+            
     with tab4:
         st.write('제작 예정')
         
