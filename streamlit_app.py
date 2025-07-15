@@ -132,19 +132,38 @@ if st.session_state.logged_in:
     with tab2:
         st.header('소방 안전 지도')
         try:
-            data = pd.read_csv("서울시 소방서 위치정보.csv", encoding='utf-8')
-            m = folium.Map(location=[37.5665, 126.9780], zoom_start=12)
+            data = pd.read_csv("서울특별시_소방서자료.csv")
 
-            # 소방서 위치 마커 추가
+            m = folium.Map(location=[37.5665, 126.9780],zoom_start=12)
+
             for i in data.index:
-                name = data.loc[i, '서ㆍ센터명']
+                name = data.loc[i, '소방서이름 ']
                 lat = data.loc[i, '위도']
                 lon = data.loc[i, '경도']
-                folium.Marker(
-                    location=[lat, lon],
-                    popup=name,
-                    icon=folium.Icon(color='red', icon='info-sign')
-                ).add_to(m)
+                address = data.loc[i, '소방서주소']
+                number = data.loc[i,'전화번호']
+                url = data.loc[i, '소방서 이미지 주소']
+                image_url = f"{url}" 
+
+                # HTML 팝업 구성
+                popup_html = f"""
+                    <div style=width:"200px">
+                    <b>소방서 명:</b> {name}<br>
+                    <b>소방서 주소:</b> {address}<br>
+                    <b>소방서 전화번호:</b> {number}<br>
+                    <img src="{image_url}" width="250px">
+                </div>
+                """
+            tooltip = name
+            popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
+            popup = folium.Popup(folium.IFrame(popup_html, width=270, height=300), max_width=300)
+    
+            folium.Marker(
+                location=[lat, lon],
+                tooltip=tooltip,
+                popup=popup,
+                icon=folium.Icon(color='blue', icon='markers')
+            ).add_to(m)
 
             # st_folium으로 지도 출력
             st_data = sf.st_folium(m, width=1920, height=600)
