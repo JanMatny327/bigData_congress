@@ -230,7 +230,7 @@ if st.session_state.logged_in:
 
         seed = int(dt.date.today().strftime("%Y%m%d"))
         random.seed(seed)
-        daily_missions = random.sample(missions, 3)
+        daily_missions = random.sample(missions, 5)
 
         if "current_page" not in st.session_state:
             st.session_state.current_page = "home"
