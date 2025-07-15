@@ -37,7 +37,6 @@ if not st.session_state.loading_done:
 
 # --- 페이지 설정 ---
 st.set_page_config(layout="wide")
-st.title('To Do Safe')
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
