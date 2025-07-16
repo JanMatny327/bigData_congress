@@ -5,6 +5,10 @@ import streamlit_folium as sf
 import time
 import datetime as dt
 import random
+from folium.features import CustomIcon
+
+point = 0
+videoCnt = 0
 
 # --- 세션 상태 초기화 ---
 if "loading_done" not in st.session_state:
@@ -142,9 +146,8 @@ if st.session_state.logged_in:
                 address = data.loc[i, '소방서주소']
                 number = data.loc[i,'전화번호']
                 url = data.loc[i, '소방서 이미지 주소']
-                image_url = f"{url}"  # 또는 웹 링크: f"https://example.com/images/{name}.jpg"
+                image_url = f"{url}"
 
-                # HTML 팝업 구성
                 popup_html = f"""
                 <div style=width:"200px">
                     <b>소방서 명:</b> {name}<br>
@@ -157,11 +160,13 @@ if st.session_state.logged_in:
                 popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
                 popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
             
+                icon = CustomIcon("소방서.png", icon_size=(40, 40))
+                
                 folium.Marker(
                     location=[lat, lon],
                     tooltip=tooltip,
                     popup=popup,
-                    icon=folium.Icon(color='blue', icon='markers')
+                    icon=icon
                 ).add_to(m)
         
 
@@ -266,7 +271,12 @@ if st.session_state.logged_in:
             mission_page(daily_missions[selected_index], selected_index + 1)
             
     with tab4:
-        st.write('제작 예정')
+        with st.expander(f"{st.session_state.username}님의 정보"):
+            st.write(f'소방안전 포인트 : {point}P')
+            st.write(f'완주한 강의 영상 수 : {videoCnt}')
+
+    
+        
         
 
 # 로그인되지 않은 경우 메시지 표시
