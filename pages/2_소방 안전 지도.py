@@ -40,6 +40,10 @@ with st.sidebar:
 
 st.header('소방 안전 지도')
 try:
+    data = pd.read_csv("서울특별시_소방서자료.csv")
+
+    m = folium.Map(location=[37.5665, 126.9780],zoom_start=12)
+    
     for i in data.index:
         name = data.loc[i, '소방서이름 ']
         lat = data.loc[i, '위도']
