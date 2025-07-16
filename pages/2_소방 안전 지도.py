@@ -5,6 +5,7 @@ import streamlit_folium as sf
 import time
 import datetime as dt
 import random
+from folium.features import CustomIcon
 
 # --- 페이지 설정 ---
 st.set_page_config(layout="wide")
@@ -40,10 +41,10 @@ with st.sidebar:
 
 st.header('소방 안전 지도')
 try:
-    data = pd.read_csv("pages/서울특별시_소방서자료.csv")
+    data = pd.read_csv("서울특별시_소방서자료.csv")
 
     m = folium.Map(location=[37.5665, 126.9780],zoom_start=12)
-
+    
     for i in data.index:
         name = data.loc[i, '소방서이름 ']
         lat = data.loc[i, '위도']
@@ -51,26 +52,27 @@ try:
         address = data.loc[i, '소방서주소']
         number = data.loc[i,'전화번호']
         url = data.loc[i, '소방서 이미지 주소']
-        image_url = f"{url}"  # 또는 웹 링크: f"https://example.com/images/{name}.jpg"
+        image_url = f"{url}"
 
-    # HTML 팝업 구성
         popup_html = f"""
-        <div style=width:"200px">
-            <b>소방서 명:</b> {name}<br>
-            <b>소방서 주소:</b> {address}<br>
-            <b>소방서 전화번호:</b> {number}<br>
-            <img src="{image_url}" width="300px">
-        </div>
-        """
+            <div style=width:"200px">
+                <b>소방서 명:</b> {name}<br>
+                <b>소방서 주소:</b> {address}<br>
+                <b>소방서 전화번호:</b> {number}<br>
+                <img src="{image_url}" width="300px">
+            </div>
+            """
         tooltip = name
         popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
         popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
-            
+    
+        icon = CustomIcon("소방서.png", icon_size=(40, 40))
+        
         folium.Marker(
             location=[lat, lon],
             tooltip=tooltip,
             popup=popup,
-            icon=folium.Icon(color='blue', icon='markers')
+            icon=icon
         ).add_to(m)
         
 
