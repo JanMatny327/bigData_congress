@@ -59,16 +59,16 @@ try:
             """
         tooltip = name
         popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
-            popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
+        popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
+    
+        icon = CustomIcon("소방서.png", icon_size=(40, 40))
         
-            icon = CustomIcon("소방서.png", icon_size=(40, 40))
-            
-            folium.Marker(
-                location=[lat, lon],
-                tooltip=tooltip,
-                popup=popup,
-                icon=icon
-            ).add_to(m)
+        folium.Marker(
+            location=[lat, lon],
+            tooltip=tooltip,
+            popup=popup,
+            icon=icon
+        ).add_to(m)
         
 
 
