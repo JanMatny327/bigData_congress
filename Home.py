@@ -38,7 +38,7 @@ if not st.session_state.loading_done:
         st.session_state.loading_done = True
 
 # --- 메인 Home Page ---
-st.image('"https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDSlogo.png"to-do-safe.png', width=1500)
+st.image('"https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/to-do-safe.png', width=1500)
 
 st.header('To do Safe : 미션을 깨면서 안전을 점검하세요')
 with st.expander('TDS(To Do Safe) 사이트란?'):
