@@ -6,6 +6,8 @@ import time
 import datetime as dt
 import random
 
+st.set_page_config(layout='wide')
+
 # --- 세션 상태 초기화 ---
 if "loading_done" not in st.session_state:
     st.session_state.loading_done = False
@@ -34,6 +36,8 @@ if not st.session_state.loading_done:
         time.sleep(2.5)
         loading.empty()
         st.session_state.loading_done = True
+
+
 
 st.header('To do Safe : 미션을 깨면서 안전을 점검하세요')
 with st.expander('TDS(To Do Safe) 사이트란?'):
