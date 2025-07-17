@@ -32,6 +32,7 @@ if "avatar_uploaded_once" not in st.session_state:
 # ✅ 레벨업 로직
 if st.session_state.current_exp >= st.session_state.base_exp:
     st.session_state.level += 1
+    st.session_state.point += 50
     st.session_state.current_exp = 0
     st.session_state.base_exp = int(100 * (st.session_state.level ** 0.65))
 
