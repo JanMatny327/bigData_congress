@@ -1,7 +1,7 @@
 import streamlit as st
-import datetime # 시간 기록을 위해 필요
+import datetime
 
-st.set_page_config(layout="wide", page_title="영상 수료 포인트 (최종)")
+st.set_page_config(layout="wide", page_title="영상 수료 포인트 (최종 시도)")
 
 st.title("🎥 영상 수료 포인트 시스템 (최종 안정화 버전)")
 st.write("각 비디오를 시청하고 **'시청 완료 확인' 버튼**을 눌러 포인트를 획득하세요.")
@@ -12,8 +12,7 @@ if 'total_points' not in st.session_state:
 
 # 각 비디오의 상태를 딕셔너리로 관리
 # key: video_id, value: {'points_awarded': bool}
-# 'st.session_session' -> 'st.session_state' 로 수정됨
-if 'video_completion_status' not in st.session_state:
+if 'video_completion_status' not in st.session_state: # Corrected from st.session_session
     st.session_state.video_completion_status = {}
 
 # --- 2. 비디오 목록 정의 (운영자 설정) ---
@@ -43,9 +42,16 @@ for video_info in VIDEO_LIST:
 
     st.subheader(f"🎬 {video_info['title']}")
     
+    # URL 값 검증 추가: URL이 유효한 문자열인지 확인
+    video_url = video_info.get('url') # .get()을 사용하여 키가 없을 때 오류 방지
+    if not isinstance(video_url, str) or not video_url:
+        st.error(f"⚠️ 오류: '{video_info.get('title', '알 수 없는 영상')}'의 비디오 URL이 유효하지 않습니다.")
+        continue # 다음 비디오로 넘어감
+
     # st.video 컴포넌트 사용
+    # 이 부분에 어떠한 주석이나 숨겨진 문자가 없도록 했습니다.
     st.video(
-        video_info['url'],
+        video_url, # 검증된 video_url 변수 사용
         start_time=0, 
         key=f"st_video_{video_id}"
     )
