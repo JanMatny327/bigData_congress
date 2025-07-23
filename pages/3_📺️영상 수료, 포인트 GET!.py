@@ -21,7 +21,6 @@ if 'last_js_message' not in st.session_state:
     st.session_state.last_js_message = ""
 
 # --- 2. 비디오 목록 정의 (운영자 설정) ---
-# 비디오 ID를 고유하게 부여하고, URL과 예상 길이를 지정합니다.
 VIDEO_LIST = [
     {"id": "video1", "title": "소방 안전 수칙 (화재 예방편)",
      "url": "https://119metaverse.nfa.go.kr/upload/safety/Vt45mNgvB42.%20%EC%86%8C%EB%B0%A9%EC%B2%AD_%ED%99%94%EC%9E%AC%20%EC%98%88%EB%B0%A9%ED%8E%B8_1.mp4",
@@ -42,95 +41,108 @@ for video_info in VIDEO_LIST:
         st.session_state.video_statuses[video_info['id']] = {
             'watched_for_points': False,
             'current_time': 0.0,
-            'duration': video_info['expected_duration'] # 초기에는 예상 길이로 설정
+            'duration': video_info['expected_duration']
         }
 
 # --- 3. 비디오 플레이어 및 JavaScript 통신 로직 ---
-# 이 함수는 각 비디오마다 HTML 컴포넌트를 생성하여 페이지에 표시합니다.
 def render_video_player(video_id, video_url):
     html_content = f"""
-    <div id="video_container_{video_id}" style="margin-bottom: 20px;">
-        <video id="player_{video_id}" width="100%" height="auto" controls playsinline src="{video_url}">
-            <source src="{video_url}" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        <div id="debug_info_{video_id}" style="font-size: 0.8em; color: #666;"></div>
-    </div>
-    <script>
-        // 현재 스크립트가 실행되는 iframe 내의 비디오 및 숨겨진 input을 찾습니다.
-        const video = document.getElementById('player_{video_id}');
-        // Streamlit 메인 앱의 input을 찾기 위해 window.parent를 사용합니다.
-        const hiddenInput = window.parent.document.querySelector('input[data-testid="video_status_receiver"]');
-        const debugDiv = document.getElementById('debug_info_{video_id}');
+    <style>
+        #player_{video_id} {{
+            display: block;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }}
+    </style>
 
-        console.log(`JS {video_id}: Script loaded.`);
-        if (!video) console.error(`JS Error {video_id}: Video element not found!`);
-        if (!hiddenInput) console.error(`JS Error {video_id}: Hidden input for Streamlit not found!`);
+    <video id="player_{video_id}" width="100%" height="auto" controls playsinline src="{video_url}">
+        <source src="{video_url}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <input type="text" id="streamlitHiddenInput" data-testid="video_status_receiver" style="display:none;" />
+
+    <script>
+        const video = document.getElementById('player_{video_id}');
+        const hiddenInput = document.getElementById('streamlitHiddenInput');
+
+        console.log(`JS {{video_id}}: Script loaded.`);
+        if (!video) {{
+            console.error(`JS Error {{video_id}}: Video element not found!`);
+        }}
+        if (!hiddenInput) {{
+            console.error(`JS Error {{video_id}}: Hidden input for Streamlit not found!`);
+        }}
 
         function sendToStreamlit(type, payload) {{
             if (hiddenInput) {{
                 const message = {{
                     type: type,
-                    video_id: '{video_id}', // 어떤 비디오에서 온 메시지인지 명확히 표시
+                    video_id: '{video_id}',
                     payload: payload
                 }};
                 hiddenInput.value = JSON.stringify(message);
                 hiddenInput.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                // console.log(`JS {video_id}: Sent ${{type}}`, JSON.stringify(payload)); // 디버깅: 너무 많이 출력될 수 있음
+                // console.log(`JS {{video_id}}: Sent ${{type}}`, JSON.stringify(payload));
+            }} else {{
+                console.error(`JS Error {{video_id}}: Cannot send message, hidden input is not accessible.`);
             }}
         }}
 
-        // 'timeupdate' 이벤트는 너무 자주 발생하므로, 1초 간격으로 제한합니다.
         let lastTimeUpdate = 0;
-        const TIME_UPDATE_INTERVAL = 1000; // 1초 (밀리초)
+        const TIME_UPDATE_INTERVAL = 1000;
 
         if (video) {{
             video.addEventListener('loadedmetadata', () => {{
-                console.log(`JS {video_id}: loadedmetadata, duration: ${{video.duration}}`);
+                console.log(`JS {{video_id}}: loadedmetadata, duration: ${{video.duration}}`);
                 sendToStreamlit('metadata', {{ duration: video.duration }});
             }});
 
             video.addEventListener('timeupdate', () => {{
                 const currentTime = video.currentTime;
-                // 이전 업데이트로부터 1초 이상 경과했을 때만 Streamlit으로 전송
                 if ((currentTime * 1000) - lastTimeUpdate >= TIME_UPDATE_INTERVAL) {{
                     sendToStreamlit('update', {{
                         currentTime: currentTime,
-                        duration: video.duration, // 현재 감지된 비디오 총 길이도 함께 보냄
+                        duration: video.duration,
                         ended: video.ended
                     }});
                     lastTimeUpdate = currentTime * 1000;
-                }
-                if (debugDiv) {{
-                    debugDiv.textContent = `현재 시간: ${{currentTime.toFixed(1)}}초 / 총 길이: ${{video.duration.toFixed(1)}}초`;
                 }}
             }});
 
             video.addEventListener('ended', () => {{
-                console.log(`JS {video_id}: Video ended.`);
+                console.log(`JS {{video_id}}: Video ended.`);
                 sendToStreamlit('ended', {{ ended: true, currentTime: video.duration, duration: video.duration }});
             }});
+
+        }} else {{
+            console.error(`JS {{video_id}}: Video element 'player_{video_id}' was not found when setting up event listeners.`);
         }}
+
+        setInterval(() => {{
+            if (video) {{
+                console.log(`JS Debug {{video_id}}: Current time: ${{video.currentTime.toFixed(1)}}, Duration: ${{video.duration.toFixed(1)}}, Ended: ${{video.ended}}`);
+            }}
+        }}, 5000);
+
     </script>
     """
-    # 각 비디오마다 고유한 HTML 컴포넌트를 렌더링
-    st.components.v1.html(html_content, height=st.session_state.video_statuses[video_id]['duration'] / 758 * 400 + 50) # 비디오 길이에 따라 높이 조절 + 디버그 div 높이
-    # 위 height 계산식은 예시이며, 실제 비디오 비율에 따라 조정해야 합니다.
-    # 일반적으로 고정 높이 400~500px 정도가 적당합니다.
-    # st.components.v1.html(html_content, height=450) # 고정 높이 사용 예시
+    # height 값을 고정하거나, 비디오 비율에 따라 유동적으로 조정할 수 있습니다.
+    st.components.v1.html(html_content, height=450)
 
 # 모든 비디오 플레이어를 렌더링
 for video_info in VIDEO_LIST:
     st.subheader(f"🎬 {video_info['title']}")
     render_video_player(video_info['id'], video_info['url'])
-    # 각 비디오 아래에 포인트 지급 상태 및 진행률 표시
+
     status = st.session_state.video_statuses[video_info['id']]
     display_duration = status['duration'] if status['duration'] > 0 else video_info['expected_duration']
-    
+
     progress_val = min(status['current_time'] / display_duration, 1.0) if display_duration > 0 else 0.0
     st.progress(progress_val, text=f"시청 진행률: {progress_val * 100:.1f}% "
                                      f"({status['current_time']:.1f}초 / {display_duration:.1f}초)")
-    
+
     if status['watched_for_points']:
         st.success(f"✅ 이 영상으로 {video_info['points']} 포인트를 획득했습니다.")
     else:
@@ -139,19 +151,16 @@ for video_info in VIDEO_LIST:
 
 
 # --- 4. Streamlit Python 코드에서 메시지 수신 및 처리 ---
-# JavaScript에서 각 비디오의 상태 업데이트 메시지를 받을 숨겨진 input
-# 이 input은 페이지 전체에서 단 하나만 존재합니다.
 received_message_str = st.text_input(
     "Hidden Video Status Receiver",
     key="video_status_receiver",
     label_visibility="collapsed"
 )
 
-# JavaScript에서 새로운 메시지를 받았을 때만 처리 (중복 실행 방지)
 if received_message_str and received_message_str != st.session_state.last_js_message:
     try:
         data = json.loads(received_message_str)
-        st.session_state.last_js_message = received_message_str # 마지막 처리된 메시지 저장
+        st.session_state.last_js_message = received_message_str
 
         video_id = data.get('video_id')
         message_type = data.get('type')
@@ -160,34 +169,29 @@ if received_message_str and received_message_str != st.session_state.last_js_mes
         if video_id and video_id in st.session_state.video_statuses:
             current_video_status = st.session_state.video_statuses[video_id]
 
-            # st.write(f"Py Received: ID={video_id}, Type={message_type}, Payload={payload}") # 디버깅용
-
             if message_type == 'metadata':
                 if payload.get('duration', 0.0) > 0:
                     current_video_status['duration'] = payload['duration']
-            
+
             elif message_type == 'update':
                 current_video_status['current_time'] = payload.get('currentTime', 0.0)
                 if payload.get('duration', 0.0) > 0:
                     current_video_status['duration'] = payload['duration']
 
             elif message_type == 'ended':
-                # 영상이 끝났다는 메시지를 받으면, 총 길이를 현재 시간으로 설정하여 100% 시청으로 간주
-                current_video_status['current_time'] = payload.get('duration', 0.0) # 총 길이로 설정
+                current_video_status['current_time'] = payload.get('duration', 0.0)
                 if payload.get('duration', 0.0) > 0:
-                    current_video_status['duration'] = payload['duration'] # 최종 길이 업데이트
+                    current_video_status['duration'] = payload['duration']
 
-            # --- 포인트 지급 로직 (모든 메시지 타입 후 공통 검증) ---
-            # 아직 포인트가 지급되지 않았고, 비디오 총 길이가 유효한 경우에만 검증
+            # --- 포인트 지급 로직 ---
             if not current_video_status['watched_for_points'] and current_video_status['duration'] > 0:
                 watch_percentage = (current_video_status['current_time'] / current_video_status['duration'])
-                
-                # 시청 완료 기준 충족 시 포인트 지급
+
                 if watch_percentage >= MIN_WATCH_PERCENTAGE_FOR_POINTS:
                     st.session_state.total_points += next(v['points'] for v in VIDEO_LIST if v['id'] == video_id)
-                    current_video_status['watched_for_points'] = True # 해당 비디오 포인트 지급 완료 플래그
+                    current_video_status['watched_for_points'] = True
                     st.toast(f"🎉 {video_id} 영상 시청 완료! 포인트 획득!", icon="🎈")
-                    st.rerun() # UI 업데이트 및 재실행
+                    st.rerun()
 
     except json.JSONDecodeError:
         st.warning("경고: JavaScript 메시지 디코딩 오류 발생. 메시지 형식 확인 필요.")
