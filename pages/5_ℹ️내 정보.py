@@ -14,18 +14,6 @@ if not st.session_state.get("logged_in"):
     st.warning("⚠️ 로그인 후 이용 가능합니다.")
     st.stop()
 
-if "level" not in st.session_state:
-    st.session_state.level = 1
-
-if "point" not in st.session_state:
-    st.session_state.point = 0
-
-if "current_exp" not in st.session_state:
-    st.session_state.current_exp = 0
-
-if "base_exp" not in st.session_state:
-    st.session_state.base_exp = 100
-
 if "avatar_uploaded_once" not in st.session_state:
     st.session_state.avatar_uploaded_once = False
 
