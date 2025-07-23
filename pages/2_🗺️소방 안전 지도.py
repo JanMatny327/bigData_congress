@@ -95,8 +95,8 @@ with tab2:
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/서울구조출동현황_진짜진짜전처리본.csv", encoding='utf-8')
         
-        select_1 = input('사고원인명 검색하세요 : ')
-        select_2 = input('시군구명 검색하세요 : ')
+        select_1 = st.selectbox('사고원인명 선택하세요 :', ['선택하세요'] + sorted(list(accident_causes)))
+        select_2 = st.selectbox('시군구명 선택하세요 :', ['선택하세요'] + sorted(list(districts)))
         df1 = data[(data['사고원인명'] == select_1) &(data['현장시군구명'] == select_2) ]
         
         
