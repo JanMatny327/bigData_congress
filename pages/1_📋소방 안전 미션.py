@@ -9,15 +9,12 @@ import random
 # --- 페이지 설정 ---
 st.set_page_config(layout="wide")
 
-if "point" not in st.session_state:
-    st.session_state.point = 0
-    
 if not st.session_state.get("logged_in"):
     st.warning("⚠️ 로그인 후 이용 가능합니다.")
     st.stop()
 
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDSlogo.png", width=150) # 로고를 사이드바 상단에 배치
+    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDS_일개미들.png", width=150) # 로고를 사이드바 상단에 배치
     st.markdown("""
         <style>
             [alt=Logo] {
@@ -38,11 +35,7 @@ with st.sidebar:
             st.session_state.new_username_input = ""
             st.session_state.new_password_input = ""
             st.rerun() # 로그아웃 후 페이지 새로고침
-
-plusPoint = 10
-plusExp = 15
-
-
+            
 # ✅ 사용자 세션 초기화
 if "username" not in st.session_state:
     st.session_state.username = "guest"
@@ -67,8 +60,6 @@ def mission_page(mission, mission_num):
             st.balloons()
             time.sleep(0.5)
             st.session_state[key] = True
-            st.session_state.point += plusPoint
-            st.session_state.current_exp += plusExp
             st.success("관리자가 검토 중입니다. 검토 후 포인트가 지급될 예정입니다.")
 
     elif mission["id"] == "quiz":
@@ -78,8 +69,6 @@ def mission_page(mission, mission_num):
                 st.balloons()
                 time.sleep(0.5)
                 st.session_state[key] = True
-                st.session_state.point += plusPoint
-                st.session_state.current_exp += plusExp
                 st.success("관리자가 검토 중입니다. 검토 후 포인트가 지급될 예정입니다.")
             else:
                 st.error("오답! 다시 시도해보세요.")
@@ -89,12 +78,10 @@ def mission_page(mission, mission_num):
             st.balloons()
             time.sleep(0.5)
             st.session_state[key] = True
-            st.session_state.point += plusPoint
-            st.session_state.current_exp += plusExp
             st.success("관리자가 검토 중입니다. 검토 후 포인트가 지급될 예정입니다.")
 
 # 페이지 타이틀 설정 (중복 제거 or 위치 조정)
-st.set_page_config(page_title="소방 안전 미션", page_icon="📋")
+st.set_page_config(page_title="소방 안전 미션")
 
 # 미션 리스트
 missions = [
