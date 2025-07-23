@@ -38,7 +38,7 @@ if st.session_state.current_exp >= st.session_state.base_exp:
 
 # --- 사이드바 ---
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDSlogo.png", width=150)
+    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDS_일개미들.png", width=150)
     st.markdown("""
         <style>
             [alt=Logo] {
