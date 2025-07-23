@@ -1,5 +1,6 @@
-streamlit
-pandas
-folium
-streamlit-folium
-Pillow
+  streamlit
+  pandas
+  folium
+  streamlit-folium
+  Pillow
+  streamlit-webrtc
