@@ -81,12 +81,12 @@ with tab1:
             
             
             
-        # st_folium으로 지도 출력
-        st_data = sf.st_folium(m, width=1920, height=600)
-        except FileNotFoundError:
-        st.error("⚠️ '서울시 소방서 위치정보.csv' 파일을 찾을 수 없습니다. 파일이 스크립트와 같은 경로에 있는지 확인해주세요.")
-        except Exception as e:
-        st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
+    # st_folium으로 지도 출력
+    st_data = sf.st_folium(m, width=1920, height=600)
+    except FileNotFoundError:
+    st.error("⚠️ '서울시 소방서 위치정보.csv' 파일을 찾을 수 없습니다. 파일이 스크립트와 같은 경로에 있는지 확인해주세요.")
+    except Exception as e:
+    st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
             
 with tab2:
     st.header('소방 사건사고 지도')
