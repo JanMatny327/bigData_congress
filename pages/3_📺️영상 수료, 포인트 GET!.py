@@ -1,27 +1,27 @@
 import streamlit as st
 from streamlit.components.v1 import html
-import json # JavaScript에서 JSON 문자열을 받아 파싱하기 위해 필요
+import json
 
 st.set_page_config(layout="wide", page_title="영상 수강 & 포인트 지급")
 
-st.title("🎥 자동 영상 수강 시간 감지 & 포인트 지급 (PostMessage 방식)")
+st.title("🎥 자동 영상 수강 시간 감지 & 포인트 지급")
 
 # --- 세션 변수 초기화 ---
 if 'points' not in st.session_state:
     st.session_state.points = 0
 if 'video_watched_for_points' not in st.session_state:
-    st.session_state.video_watched_for_points = False # 포인트 지급 여부 추적
+    st.session_state.video_watched_for_points = False
 if 'current_play_time' not in st.session_state:
     st.session_state.current_play_time = 0.0
 if 'video_total_duration' not in st.session_state:
     st.session_state.video_total_duration = 0.0
 if 'last_video_state_json' not in st.session_state:
-    st.session_state.last_video_state_json = "" # JS에서 받은 마지막 JSON 문자열 저장
+    st.session_state.last_video_state_json = ""
 
 # --- 비디오 URL ---
 VIDEO_URL = "https://119metaverse.nfa.go.kr/upload/safety/Vt45mNgvB42.%20%EC%86%8C%EB%B0%A9%EC%B2%AD_%ED%99%94%EC%9E%AC%20%EC%98%88%EB%B0%A9%ED%8E%B8_1.mp4"
 
-# --- 1. 비디오 플레이어 및 JavaScript 송신 로직 ---
+# --- 1. 비디오 플레이어 및 JavaScript 송신 로직 (모든 비디오 관련 HTML/JS를 여기에) ---
 # JavaScript에서 비디오의 현재 상태를 주기적으로 Streamlit으로 전달
 video_player_html = f"""
 <video id="myVideoPlayer" width="100%" height="auto" controls src="{VIDEO_URL}">
@@ -29,46 +29,49 @@ video_player_html = f"""
     Your browser does not support the video tag.
 </video>
 <script>
+    // 이 스크립트가 로드될 때 video 요소를 찾음
     const video = document.getElementById('myVideoPlayer');
+    // console.log("Video element found:", video); // 비디오 요소가 제대로 찾아지는지 디버깅
 
     // 1초마다 현재 시간, 총 길이, 종료 여부 등 상태를 JSON 형태로 부모에게 전송
     setInterval(() => {{
         // video 요소가 존재하고, 최소한 메타데이터가 로드되어 재생 가능할 때만 메시지 전송
-        if (video && video.readyState > 0) {{
+        if (video && video.readyState >= 1) {{ // readyState >=1 (HAVE_METADATA) 이상일 때만 전송
             const videoState = {{
                 currentTime: video.currentTime,
                 duration: video.duration,
                 ended: video.ended
             }};
-            // 부모 Streamlit 앱으로 메시지 전송
             window.parent.postMessage({{
                 type: 'video_status_update',
                 payload: videoState
             }}, '*');
-            // console.log('JS sent video_status_update:', videoState.currentTime.toFixed(1)); // 디버깅용
+            // console.log('JS sent video_status_update:', videoState.currentTime.toFixed(1));
         }}
     }}, 1000); // 1초마다 전송
 
     // 비디오가 완전히 끝났을 때 명시적으로 알림 (안전 장치)
-    video.addEventListener('ended', () => {{
-        window.parent.postMessage({{
-            type: 'video_ended_event',
-            payload: {{ ended: true }}
-        }}, '*');
-        // console.log('JS sent video_ended_event'); // 디버깅용
-    }});
+    if (video) {{ // video 요소가 null이 아닌지 다시 확인
+        video.addEventListener('ended', () => {{
+            window.parent.postMessage({{
+                type: 'video_ended_event',
+                payload: {{ ended: true }}
+            }}, '*');
+            // console.log('JS sent video_ended_event');
+        }});
 
-    // 비디오 메타데이터가 로드되었을 때 총 길이를 즉시 전송
-    video.addEventListener('loadedmetadata', () => {{
-        window.parent.postMessage({{
-            type: 'video_metadata_loaded',
-            payload: {{ duration: video.duration }}
-        }}, '*');
-        // console.log('JS sent video_metadata_loaded:', video.duration.toFixed(1)); // 디버깅용
-    }});
-
+        // 비디오 메타데이터가 로드되었을 때 총 길이를 즉시 전송
+        video.addEventListener('loadedmetadata', () => {{
+            window.parent.postMessage({{
+                type: 'video_metadata_loaded',
+                payload: {{ duration: video.duration }}
+            }}, '*');
+            // console.log('JS sent video_metadata_loaded:', video.duration.toFixed(1));
+        }});
+    }}
 </script>
 """
+# 높이를 넉넉하게 주어 비디오가 잘 보이도록 합니다.
 st.components.v1.html(video_player_html, height=400)
 
 # --- 2. JavaScript 메시지 수신 및 Streamlit으로 전달 (숨겨진 input 활용) ---
@@ -91,7 +94,7 @@ window.addEventListener("message", (event) => {
             inputElement.value = JSON.stringify(event.data);
             // input 이벤트를 강제로 발생시켜 Streamlit 앱의 재실행을 유도
             inputElement.dispatchEvent(new Event('input', { bubbles: true }));
-            // console.log('JS received message and dispatched input:', event.data.type); // 디버깅용
+            // console.log('JS received message and dispatched input:', event.data.type);
         }
     }
 });
