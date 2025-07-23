@@ -101,8 +101,15 @@ with tab2:
         select_1 = st.selectbox('사고원인명 선택하세요 :', ['선택하세요'] + sorted(list(accident_causes)))
         select_2 = st.selectbox('시군구명 선택하세요 :', ['선택하세요'] + sorted(list(districts)))
         df1 = data[(data['사고원인명'] == select_1) &(data['현장시군구명'] == select_2) ]
+
+        if not df1.empty:
+            center_lat = df1['손상지역위도'].mean()
+            center_lon = df1['손상지역경도'].mean()
+            center = [center_lat, center_lon]
+        else:
+            center = [37.551244, 126.988222]
+
         
-        center = [37.551244, 126.988222]
         m = folium.Map(location=center, zoom_start=14.5)  
         
             
