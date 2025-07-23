@@ -8,6 +8,18 @@ import random
 
 st.set_page_config(layout='wide')
 
+if "level" not in st.session_state:
+    st.session_state.level = 1
+
+if "point" not in st.session_state:
+    st.session_state.point = 0
+
+if "current_exp" not in st.session_state:
+    st.session_state.current_exp = 0
+
+if "base_exp" not in st.session_state:
+    st.session_state.base_exp = 100
+
 # --- 세션 상태 초기화 ---
 if "loading_done" not in st.session_state:
     st.session_state.loading_done = False
