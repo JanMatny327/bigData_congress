@@ -67,8 +67,7 @@ with tab1:
                     <b>소방서 주소:</b> {address}<br>
                     <b>소방서 전화번호:</b> {number}<br>
                     <img src="{image_url}" width="300px">
-                </div>
-                """
+                </div>"""
             
             tooltip = name
             popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
@@ -145,7 +144,7 @@ with tab2:
     
         st_data = st.st_folium(m, width=1920, height=600)
 
-        except FileNotFoundError:
-            st.error("⚠️ '서울시 소방서 위치정보.csv' 파일을 찾을 수 없습니다. 파일이 스크립트와 같은 경로에 있는지 확인해주세요.")
-        except Exception as e:
-            st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
+    except FileNotFoundError:
+        st.error("⚠️ '서울시 소방서 위치정보.csv' 파일을 찾을 수 없습니다. 파일이 스크립트와 같은 경로에 있는지 확인해주세요.")
+    except Exception as e:
+        st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
