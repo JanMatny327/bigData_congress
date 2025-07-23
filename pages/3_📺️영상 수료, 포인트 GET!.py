@@ -1,53 +1,39 @@
 import streamlit as st
 from streamlit.components.v1 import html
 
+st.title("간단 영상 재생시간 자동 체크")
+
+# 세션 초기화
 if 'videoTime' not in st.session_state:
-    st.session_state.videoTime = 0.0
-if 'FullTime' not in st.session_state:
-    st.session_state.FullTime = 5.0
+    st.session_state.videoTime = 0
 
-st.title("영상 재생시간 자동 감지 테스트")
-
-video_html = """
-<video id="videoPlayer" width="640" height="360" controls>
+# HTML+JS: 영상 + 1초마다 currentTime을 hidden input에 직접 넣기
+video_js = """
+<video id="video" width="640" controls>
   <source src="https://119metaverse.nfa.go.kr/upload/safety/Vt45mNgvB42.%20%EC%86%8C%EB%B0%A9%EC%B2%AD_%ED%99%94%EC%9E%AC%20%EC%98%88%EB%B0%A9%ED%8E%B8_1.mp4" type="video/mp4">
-  Your browser does not support the video tag.
 </video>
 
+<input type="hidden" id="timeInput" />
+
 <script>
-const video = document.getElementById('videoPlayer');
+const video = document.getElementById('video');
+const input = document.getElementById('timeInput');
+
 setInterval(() => {
-  console.log("Sending currentTime:", video.currentTime);
-  window.parent.postMessage({videoTime: video.currentTime / 60}, "*");
+  input.value = video.currentTime.toFixed(2);
+  input.dispatchEvent(new Event('input'));
 }, 1000);
 </script>
 """
 
-html(video_html, height=400)
+html(video_js, height=400)
 
-html("""
-<script>
-window.addEventListener("message", (event) => {
-  console.log("Received message in Streamlit:", event.data);
-  if(event.data.videoTime !== undefined){
-    const input = window.parent.document.querySelector('input[data-testid="videoTimeInput"]');
-    if(input){
-      input.value = event.data.videoTime.toFixed(2);
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-  }
-});
-</script>
-<input type="text" data-testid="videoTimeInput" style="display:none" />
-""", height=0)
+# Streamlit 텍스트 입력에 hidden input 연결(key값 맞춤)
+time = st.text_input("현재 재생 시간 (초)", key="timeInput")
 
-time_str = st.text_input("", key="videoTimeInput", label_visibility="collapsed")
+if time:
+    st.session_state.videoTime = float(time)
 
-if time_str:
-    try:
-        st.session_state.videoTime = float(time_str)
-    except:
-        pass
-
-progress = min(st.session_state.videoTime / st.session_state.FullTime, 1.0)
-st.progress(progress, text=f"현재 시청 시간: {st.session_state.videoTime:.2f}분 / {st.session_state.FullTime}분")
+progress = st.session_state.videoTime / (5*60)  # 5분 기준
+st.progress(min(progress, 1.0))
+st.write(f"현재 시청 시간: {st.session_state.videoTime:.2f}초 / 300초")
