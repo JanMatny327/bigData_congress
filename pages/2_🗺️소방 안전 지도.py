@@ -17,7 +17,7 @@ if not st.session_state.get("logged_in"):
 st.set_page_config(page_title="소방 안전 지도", page_icon="🗺️")
 
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDSlogo.png", width=150) # 로고를 사이드바 상단에 배치
+    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDS_일개미들.png", width=150) # 로고를 사이드바 상단에 배치
     st.markdown("""
         <style>
             [alt=Logo] {
@@ -41,7 +41,7 @@ with st.sidebar:
 
 st.header('소방 안전 지도')
 try:
-    data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
+    data = pd.read_csv("서울특별시_소방서자료.csv")
 
     m = folium.Map(location=[37.5665, 126.9780],zoom_start=12)
     
@@ -51,7 +51,7 @@ try:
         lon = data.loc[i, '경도']
         address = data.loc[i, '소방서주소']
         number = data.loc[i,'전화번호']
-        url = data.loc[i, '소방서_이미지_주소']
+        url = data.loc[i, '소방서 이미지 주소']
         image_url = f"{url}"
 
         popup_html = f"""
@@ -66,7 +66,7 @@ try:
         popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
         popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
     
-        icon = CustomIcon("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/소방서.png", icon_size=(40, 40))
+        icon = CustomIcon("소방서.png", icon_size=(40, 40))
         
         folium.Marker(
             location=[lat, lon],
