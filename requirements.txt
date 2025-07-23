@@ -1,7 +1,6 @@
-  streamlit==1.36.0
-  pandas
-  folium
-  streamlit-folium
-  Pillow
-  streamlit-js-eval
-
+streamlit>=1.36.0
+pandas
+folium
+streamlit-folium
+Pillow
+streamlit-js-eval
