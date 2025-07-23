@@ -33,7 +33,8 @@ video_player_html = f"""
 
     // 1초마다 현재 시간, 총 길이, 종료 여부 등 상태를 JSON 형태로 부모에게 전송
     setInterval(() => {{
-        if (video && video.readyState > 0) {{ // 비디오가 로드되고 재생 가능할 때만
+        // video 요소가 존재하고, 최소한 메타데이터가 로드되어 재생 가능할 때만 메시지 전송
+        if (video && video.readyState > 0) {{
             const videoState = {{
                 currentTime: video.currentTime,
                 duration: video.duration,
@@ -44,6 +45,7 @@ video_player_html = f"""
                 type: 'video_status_update',
                 payload: videoState
             }}, '*');
+            // console.log('JS sent video_status_update:', videoState.currentTime.toFixed(1)); // 디버깅용
         }}
     }}, 1000); // 1초마다 전송
 
@@ -53,6 +55,7 @@ video_player_html = f"""
             type: 'video_ended_event',
             payload: {{ ended: true }}
         }}, '*');
+        // console.log('JS sent video_ended_event'); // 디버깅용
     }});
 
     // 비디오 메타데이터가 로드되었을 때 총 길이를 즉시 전송
@@ -61,6 +64,7 @@ video_player_html = f"""
             type: 'video_metadata_loaded',
             payload: {{ duration: video.duration }}
         }}, '*');
+        // console.log('JS sent video_metadata_loaded:', video.duration.toFixed(1)); // 디버깅용
     }});
 
 </script>
@@ -74,11 +78,11 @@ st.components.v1.html(video_player_html, height=400)
 message_receiver_html = """
 <script>
 window.addEventListener("message", (event) => {
-    // 특정 origin만 허용하려면 event.origin을 확인하세요 (예: "http://localhost:8501")
+    // 보안 강화를 위해 특정 origin만 허용하려면 event.origin을 확인하세요 (예: "http://localhost:8501")
     // if (event.origin !== "http://localhost:8501") return;
 
     // 비디오 플레이어에서 온 메시지인지 확인
-    if (event.data && (event.data.type === 'video_status_update' || 
+    if (event.data && (event.data.type === 'video_status_update' ||
                        event.data.type === 'video_ended_event' ||
                        event.data.type === 'video_metadata_loaded')) {
         const inputElement = window.parent.document.querySelector('input[data-testid="video_message_receiver"]');
@@ -87,6 +91,7 @@ window.addEventListener("message", (event) => {
             inputElement.value = JSON.stringify(event.data);
             // input 이벤트를 강제로 발생시켜 Streamlit 앱의 재실행을 유도
             inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+            // console.log('JS received message and dispatched input:', event.data.type); // 디버깅용
         }
     }
 });
@@ -109,6 +114,8 @@ if received_message_json and received_message_json != st.session_state.last_vide
         data = json.loads(received_message_json)
         st.session_state.last_video_state_json = received_message_json # 마지막으로 처리한 메시지 업데이트
 
+        # st.write(f"Python received data: {data}") # Python에서 데이터 수신 확인용
+
         if data.get('type') == 'video_status_update':
             payload = data.get('payload', {})
             st.session_state.current_play_time = payload.get('currentTime', 0.0)
@@ -118,7 +125,7 @@ if received_message_json and received_message_json != st.session_state.last_vide
             # 포인트 지급 로직 (현재 시간 기반)
             if st.session_state.video_total_duration > 0 and not st.session_state.video_watched_for_points:
                 watch_percentage = (st.session_state.current_play_time / st.session_state.video_total_duration) * 100
-                
+
                 # 95% 이상 시청했거나, JS에서 'ended'라고 명시적으로 알린 경우
                 if watch_percentage >= 95.0 or payload.get('ended', False):
                     st.session_state.points += 25
