@@ -92,11 +92,12 @@ with tab1:
 # --- 사건사고 지도 탭 ---
 with tab2:
     st.header('사건사고 지도')
+
+    select_1 = st.selectbox('사고원인명 선택하세요 :', ['선택하세요'] + sorted(list(accident_causes)))
+    select_2 = st.selectbox('시군구명 선택하세요 :', ['선택하세요'] + sorted(list(districts)))
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/서울구조출동현황_진짜진짜전처리본.csv", encoding='utf-8')
         
-        select_1 = st.selectbox('사고원인명 선택하세요 :', ['선택하세요'] + sorted(list(accident_causes)))
-        select_2 = st.selectbox('시군구명 선택하세요 :', ['선택하세요'] + sorted(list(districts)))
         df1 = data[(data['사고원인명'] == select_1) &(data['현장시군구명'] == select_2) ]
         
         
