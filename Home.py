@@ -54,7 +54,7 @@ with st.expander('소방 안전 지도란?'):
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDSlogo.png", width=150) # 로고를 사이드바 상단에 배치
+    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDS_일개미들.png", width=150) # 로고를 사이드바 상단에 배치
     st.markdown("""
         <style>
             [alt=Logo] {
