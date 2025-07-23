@@ -12,10 +12,11 @@ if 'total_points' not in st.session_state:
 
 # 각 비디오의 상태를 딕셔너리로 관리
 # key: video_id, value: {'points_awarded': bool}
-if 'video_completion_status' not in st.session_state: # Corrected from st.session_session
+if 'video_completion_status' not in st.session_state:
     st.session_state.video_completion_status = {}
 
 # --- 2. 비디오 목록 정의 (운영자 설정) ---
+# 모든 URL이 유효한지 다시 한번 확인해주세요.
 VIDEO_LIST = [
     {"id": "video1", "title": "소방 안전 수칙 (화재 예방편)",
      "url": "https://119metaverse.nfa.go.kr/upload/safety/Vt45mNgvB42.%20%EC%86%8C%EB%B0%A9%EC%B2%AD_%ED%99%94%EC%9E%AC%20%EC%98%88%EB%B0%A9%ED%8E%B8_1.mp4",
@@ -42,19 +43,28 @@ for video_info in VIDEO_LIST:
 
     st.subheader(f"🎬 {video_info['title']}")
     
-    # URL 값 검증 추가: URL이 유효한 문자열인지 확인
-    video_url = video_info.get('url') # .get()을 사용하여 키가 없을 때 오류 방지
+    # URL 값에 대한 강력한 검증 및 에러 처리
+    video_url = video_info.get('url')
+    
+    # URL이 존재하고, 문자열이며, 비어있지 않은지 확인
     if not isinstance(video_url, str) or not video_url:
-        st.error(f"⚠️ 오류: '{video_info.get('title', '알 수 없는 영상')}'의 비디오 URL이 유효하지 않습니다.")
-        continue # 다음 비디오로 넘어감
+        st.error(f"⚠️ 오류: '{video_info.get('title', '알 수 없는 영상')}' 영상의 URL이 없거나 유효하지 않습니다. URL: `{video_url}`")
+        # 다음 비디오로 건너뛰어 다른 비디오의 로딩을 방해하지 않도록 함
+        st.markdown("---") 
+        continue 
 
-    # st.video 컴포넌트 사용
-    # 이 부분에 어떠한 주석이나 숨겨진 문자가 없도록 했습니다.
-    st.video(
-        video_url, # 검증된 video_url 변수 사용
-        start_time=0, 
-        key=f"st_video_{video_id}"
-    )
+    try:
+        # st.video 컴포넌트 사용
+        st.video(
+            video_url, # 검증된 video_url 변수 사용
+            start_time=0, 
+            key=f"st_video_{video_id}"
+        )
+    except Exception as e:
+        # st.video 자체에서 발생하는 예외를 잡아서 구체적인 에러 메시지를 출력
+        st.error(f"❌ '{video_info.get('title', '알 수 없는 영상')}' 영상 로딩 중 심각한 오류 발생: `{e}`")
+        st.markdown("---")
+        continue
 
     # '시청 완료 확인' 버튼
     # 이미 포인트가 지급되었으면 버튼 비활성화
