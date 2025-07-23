@@ -88,5 +88,5 @@ with tab1:
             except Exception as e:
             st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
             
-    with tab2:
-        st.header('소방 사건사고 지도')
+with tab2:
+    st.header('소방 사건사고 지도')
