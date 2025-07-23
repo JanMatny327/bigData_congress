@@ -3,3 +3,4 @@
   folium
   streamlit-folium
   Pillow
+  streamlit-js-eval
