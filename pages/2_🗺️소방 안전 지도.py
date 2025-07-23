@@ -142,7 +142,7 @@ with tab2:
                 'color': 'red',
                 'weight': 5
             }
-        ).add_to(map)
+        ).add_to(m)
     
         st_data = st.st_folium(m, width=1920, height=600)
 
