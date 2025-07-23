@@ -1,9 +1,9 @@
 import streamlit as st
-import datetime # 시간 기록을 위해 필요
+import datetime
 
-st.set_page_config(layout="wide", page_title="영상 수료 포인트 (안정화)")
+st.set_page_config(layout="wide", page_title="영상 수료 포인트 (최종)")
 
-st.title("🎥 영상 수료 포인트 시스템 (안정화 버전)")
+st.title("🎥 영상 수료 포인트 시스템 (최종 안정화 버전)")
 st.write("각 비디오를 시청하고 **'시청 완료 확인' 버튼**을 눌러 포인트를 획득하세요.")
 
 # --- 1. 세션 변수 초기화 ---
@@ -12,7 +12,7 @@ if 'total_points' not in st.session_state:
 
 # 각 비디오의 상태를 딕셔너리로 관리
 # key: video_id, value: {'points_awarded': bool}
-if 'video_completion_status' not in st.session_state:
+if 'video_completion_status' not in st.session_session:
     st.session_state.video_completion_status = {}
 
 # --- 2. 비디오 목록 정의 (운영자 설정) ---
@@ -43,7 +43,7 @@ for video_info in VIDEO_LIST:
     st.subheader(f"🎬 {video_info['title']}")
     
     # st.video 컴포넌트 사용
-    # 여기에는 주석을 포함하지 않았습니다.
+    # 이 부분에 어떠한 주석이나 숨겨진 문자가 없도록 했습니다.
     st.video(
         video_info['url'],
         start_time=0, 
