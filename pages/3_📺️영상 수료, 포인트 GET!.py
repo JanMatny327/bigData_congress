@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit.components.v1 import html
-import time
 
 st.title("영상 재생시간 자동 감지 (최대한 간단)")
 
@@ -21,9 +20,10 @@ video_html = """
 
 html(video_html, height=400)
 
-# 버튼 누르면 localStorage에서 재생시간을 JS->파이썬으로 가져오기
+# 버튼 누르면 query_params에서 'videoTime' 값을 가져와서 업데이트
 if st.button("현재 영상 재생시간 불러오기"):
-    st.session_state.videoTime = st.experimental_get_query_params().get('videoTime', [0])[0]
+    video_time_param = st.session_state.query_params.get('videoTime', [0])
+    st.session_state.videoTime = float(video_time_param[0]) if video_time_param else 0
 
 progress = st.session_state.videoTime / (5*60)
 st.progress(min(progress, 1.0))
