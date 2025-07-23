@@ -39,7 +39,7 @@ with st.sidebar:
             st.session_state.new_password_input = ""
             st.rerun() # 로그아웃 후 페이지 새로고침
 
-tab1, tab2 = st.tabs('소방 안전 지도', '소방 사건사고 지도')
+tab1, tab2 = st.tabs(['소방 안전 지도', '소방 사건사고 지도'])
 
 with tab1:
     st.header('소방 안전 지도')
@@ -65,6 +65,7 @@ with tab1:
                     <img src="{image_url}" width="300px">
                 </div>
                 """
+            
             tooltip = name
             popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
             popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
@@ -86,5 +87,6 @@ with tab1:
             st.error("⚠️ '서울시 소방서 위치정보.csv' 파일을 찾을 수 없습니다. 파일이 스크립트와 같은 경로에 있는지 확인해주세요.")
             except Exception as e:
             st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
+            
 with tab2:
     st.header('소방 사건사고 지도')
