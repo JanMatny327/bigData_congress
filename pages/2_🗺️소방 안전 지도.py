@@ -93,7 +93,7 @@ with tab1:
 with tab2:
     st.header('사건사고 지도')
     try:
-        data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/Seoul_Rescue_Final.csv", encoding='euc-kr')
+        data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/Seoul_Rescue_Final.csv", encoding='utf-8')
         
         accident_causes = data['사고원인명'].unique()
         districts = data['현장시군구명'].unique()
