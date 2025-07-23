@@ -153,3 +153,36 @@ if received_message_str and received_message_str != st.session_state.js_message_
             payload['ended'] = True # ended 플래그 강제 설정
 
         elif message_type == 'video_metadata':
+            if payload.get('duration', 0.0) > 0:
+                st.session_state.total_video_duration = payload.get('duration', 0.0)
+
+        # --- 3. 포인트 지급 로직 ---
+        if st.session_state.total_video_duration > 0 and not st.session_state.video_completed_for_points:
+            watch_percentage = (st.session_state.current_video_time / st.session_state.total_video_duration) * 100
+
+            if payload.get('ended', False) or watch_percentage >= 95.0:
+                st.session_state.points += 25
+                st.session_state.video_completed_for_points = True
+                st.success(f"✅ 영상 시청 완료! 포인트 25점 지급! 총 포인트: {st.session_state.points}점")
+                st.balloons()
+                st.rerun() # UI 업데이트 및 재실행
+
+    except json.JSONDecodeError:
+        st.warning("경고: JavaScript 메시지 디코딩 오류 발생. 메시지 형식 확인 필요.")
+    except Exception as e:
+        st.error(f"오류: Streamlit에서 데이터 처리 중 문제 발생: {e}")
+
+# --- 4. 사용자 인터페이스 (진행률 바 & 포인트 표시) ---
+st.markdown("---")
+# 비디오 총 길이가 유효하면 그 값을 사용, 아니면 기본값
+display_duration = st.session_state.total_video_duration if st.session_state.total_video_duration > 0 else 300.0
+
+progress_value = min(st.session_state.current_video_time / display_duration, 1.0)
+st.progress(progress_value, text=f"시청 진행률: {progress_value * 100:.1f}% "
+                                   f"({st.session_state.current_video_time:.1f}초 / {display_duration:.1f}초)")
+
+st.metric("현재 획득 포인트", value=f"{st.session_state.points} 점")
+
+st.markdown("---")
+st.info("💡 비디오를 끝까지 시청하면 (95% 이상 시청 또는 종료 이벤트 발생) 포인트가 지급됩니다.")
+st.caption("문제가 발생하면 브라우저 개발자 도구 (F12)의 'Console' 탭을 확인해주세요.")
