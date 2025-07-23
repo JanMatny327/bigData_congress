@@ -20,7 +20,7 @@ if not st.session_state.get("logged_in"):
 
 # 로그아웃 버튼 사이드바
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDSlogo.png", width=150) # 로고를 사이드바 상단에 배치
+    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDS_일개미들.png", width=150) # 로고를 사이드바 상단에 배치
     st.markdown("""
         <style>
             [alt=Logo] {
@@ -50,7 +50,7 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader('영상 강의자료')
     with st.expander('화제안전 영상교육'):
-        st.video('소방안전 교육 화제예방.mp4') 
+        st.video('https://119metaverse.nfa.go.kr/upload/safety/Vt45mNgvB42.%20%EC%86%8C%EB%B0%A9%EC%B2%AD_%ED%99%94%EC%9E%AC%20%EC%98%88%EB%B0%A9%ED%8E%B8_1.mp4') 
         st.progress(st.session_state.videoTime, text=f"현재 시청 시간 : {st.session_state.videoTime}분 / {st.session_state.FullTime}분")
 
 with col2:
