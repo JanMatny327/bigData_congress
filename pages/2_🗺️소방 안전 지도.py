@@ -6,6 +6,9 @@ import time
 import datetime as dt
 import random
 from folium.features import CustomIcon
+from folium.plugins import HeatMap
+import json
+import requests
 
 # --- 페이지 설정 ---
 st.set_page_config(layout="wide")
@@ -41,6 +44,7 @@ with st.sidebar:
 
 tab1, tab2 = st.tabs(['소방 안전 지도', '소방 사건사고 지도'])
 
+# --- 소방 안전 지도 탭 ---
 with tab1:
     st.header('소방 안전 지도')
     try:
@@ -85,6 +89,64 @@ with tab1:
         st.error("⚠️ '서울시 소방서 위치정보.csv' 파일을 찾을 수 없습니다. 파일이 스크립트와 같은 경로에 있는지 확인해주세요.")
     except Exception as e:
         st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
-            
+
+# --- 사건사고 지도 탭 ---
 with tab2:
-    st.header('소방 사건사고 지도')
+    st.header('사건사고 지도')
+    try:
+
+        data = pd.read_csv("서울구조출동현황_진짜진짜전처리본.csv")
+        
+        select_1 = input('사고원인명 검색하세요 : ')
+        select_2 = input('시군구명 검색하세요 : ')
+        df1 = data[(data['사고원인명'] == select_1) &(data['현장시군구명'] == select_2) ]
+        
+        
+        center = [37.551244, 126.988222]
+        m = folium.Map(location=center, zoom_start=14.5)  
+        
+            
+        HeatMap(
+            data=df1[['손상지역위도', '손상지역경도']], 
+            radius=20,
+            
+        ).add_to(m)
+        title_html = f"""
+                     <h3 align="center" style="font-size:16px"><b> {select_1} </b></h3>
+                     """
+        m.get_root().html.add_child(folium.Element(title_html))
+        
+        # 서울 행정구역 json raw파일(githubcontent)
+        r = requests.get('https://raw.githubusercontent.com/southkorea/seoul-maps/master/kostat/2013/json/seoul_municipalities_geo_simple.json')
+        c = r.content
+        seoul_geo = json.loads(c)
+        
+        target_gu = select_2
+        
+        # 3. 원하는 구만 필터링
+        filtered_features = [
+            feature for feature in seoul_geo['features']
+            if feature['properties']['name'] == target_gu
+        ]
+        
+        filtered_geojson = {
+            "type": "FeatureCollection",
+            "features": filtered_features
+        }
+        
+        folium.GeoJson(
+            filtered_geojson,
+            name=target_gu,
+            style_function=lambda feature: {
+                'fillColor': 'none',
+                'color': 'red',
+                'weight': 5
+            }
+        ).add_to(map)
+    
+        st_data = st.st_folium(m, width=1920, height=600)
+
+        except FileNotFoundError:
+            st.error("⚠️ '서울시 소방서 위치정보.csv' 파일을 찾을 수 없습니다. 파일이 스크립트와 같은 경로에 있는지 확인해주세요.")
+        except Exception as e:
+            st.error(f"지도 로딩 중 오류가 발생했습니다: {e}")
