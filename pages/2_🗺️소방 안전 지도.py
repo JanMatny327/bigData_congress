@@ -93,7 +93,7 @@ with tab1:
 with tab2:
     st.header('사건사고 지도')
     try:
-        data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/서울구조출동현황_진짜진짜전처리본.csv")
+        data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/서울구조출동현황_진짜진짜전처리본.csv", encoding='utf-8')
         
         select_1 = input('사고원인명 검색하세요 : ')
         select_2 = input('시군구명 검색하세요 : ')
