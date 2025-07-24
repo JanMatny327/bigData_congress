@@ -72,7 +72,7 @@ with tab1:
 
         # 소방서 마커
         for i in data2.index:
-            name = data2.loc[i, '소방서']
+            name = (data2.loc[i, '소방서'])
             lat = float(data2.loc[i, '위도'])
             lon = float(data2.loc[i, '경도'])
             address = (data2.loc[i, '주소'])
