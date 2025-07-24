@@ -113,8 +113,8 @@ with tab2:
         accident_causes = data['사고원인명'].unique()
         districts = data['현장시군구명'].unique()
 
-        select_1 = st.selectbox('사고원인명 선택하세요 :', ['선택하세요'] + sorted(list(accident_causes)))
-        select_2 = st.selectbox('시군구명 선택하세요 :', ['선택하세요'] + sorted(list(districts)))
+        select_1 = st.selectbox('사고원인명 선택하세요 :', sorted(list(accident_causes)))
+        select_2 = st.selectbox('시군구명 선택하세요 :', sorted(list(districts)))
         df1 = data[(data['사고원인명'] == select_1) &(data['현장시군구명'] == select_2) ]
 
         if not df1.empty:
