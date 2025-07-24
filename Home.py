@@ -66,9 +66,9 @@ with st.expander('소방 안전 지도란?'):
     '\n또한 과거의 사고 정보을 확인하여 안전사고를 미리 예방할 수 있습니다.')
 
 # --- 메인 Home Page에 시각화 데이터 ---
-df = pd.read_csv("부주의에_의한_화재발생.csv")
+fireData = pd.read_csv("부주의에_의한_화재발생.csv")
 
-st.bar_chart(df, x='사고원인', y='발생횟수', color=["#FF0000", "#0000FF"])
+st.bar_chart(fireData, x='사고원인', y='발생횟수')
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
