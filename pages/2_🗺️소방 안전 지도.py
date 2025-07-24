@@ -98,33 +98,6 @@ with tab1:
                 icon=icon
             ).add_to(m)
             
-        for i in data.index:
-            name = data.loc[i, '소방서이름 ']
-            lat = data.loc[i, '위도']
-            lon = data.loc[i, '경도']
-            address = data.loc[i, '소방서주소']
-            number = data.loc[i,'전화번호']
-            url = data.loc[i, '소방서_이미지_주소']
-            image_url = f"{url}"
-            popup_html = f"""
-            <div style=width:"200px">
-                <b>소방서 명:</b> {name}<br>
-                <b>소방서 주소:</b> {address}<br>
-                <b>소방서 전화번호:</b> {number}<br>
-                <img src="{image_url}" width="300px">
-            </div>
-            """
-            tooltip = name
-            popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
-            popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
-            icon = CustomIcon("소방서.png", icon_size=(40, 40))
-            folium.Marker(
-                location=[lat, lon],
-                tooltip=tooltip,
-                popup=popup,
-                icon=icon
-            ).add_to(m)
-    
             sf.st_folium(m, width=1920, height=600)
 
     except Exception as e:
