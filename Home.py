@@ -68,7 +68,7 @@ with st.expander('소방 안전 지도란?'):
 # --- 메인 Home Page에 시각화 데이터 ---
 df = pd.read_csv("부주의에_의한_화재발생.csv")
 
-st.bar_chart(df, x='사고원인', y='발생횟수', title='2022년도 서울시 부주의로 인한 화재사고 원인')
+st.bar_chart(df, x='사고원인', y='발생횟수', color=["#FF0000", "#0000FF"])
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
