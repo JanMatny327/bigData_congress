@@ -50,6 +50,12 @@ if not st.session_state.loading_done:
         loading.empty()
         st.session_state.loading_done = True
 
+# --- 메인 Home Page에 시각화 데이터 ---
+with st.expander('부주의로 인한 화재발생(서울)'):
+    fireData = pd.read_csv("부주의에_의한_화재발생.csv")
+
+    st.bar_chart(fireData, x='사고원인', y='발생횟수')
+
 # --- 메인 Home Page ---
 st.image('https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/to-do-safe.png', width=1500)
 
@@ -65,10 +71,6 @@ with st.expander('소방 안전 지도란?'):
     '\n시민들이 주변의 있는 소방서를 빠르게 확인하여 사고를 줄일 수 있는 지도입니다.' +
     '\n또한 과거의 사고 정보을 확인하여 안전사고를 미리 예방할 수 있습니다.')
 
-# --- 메인 Home Page에 시각화 데이터 ---
-fireData = pd.read_csv("부주의에_의한_화재발생.csv")
-
-st.bar_chart(fireData, x='사고원인', y='발생횟수')
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
