@@ -58,7 +58,11 @@ st.header('부주의로 인한 사고는 누군가에게 지워지지 않는 피
 with st.expander('부주의로 인한 화재발생(서울)'):
     fireData = pd.read_csv("부주의에_의한_화재발생.csv")
 
-    st.bar_chart(fireData, x='사고원인', y='발생횟수')
+    fig = px.bar(fireData, x='사고원인', y='발생횟수')
+
+    fig.update_layout(xaxis_tickangle=0)
+
+    st.bar_chart(fig)
 
 st.header('To do Safe : 미션을 깨면서 안전을 점검하세요')
 with st.expander('TDS(To Do Safe) 사이트란?'):
