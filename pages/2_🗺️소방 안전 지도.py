@@ -56,7 +56,8 @@ with tab1:
         if location:
             lat = location['coords']['latitude']
             lon = location['coords']['longitude']
-        
+            
+        m = folium.Map(location=[lat, lon],zoom_start=12)
         # --- 내 위치 마커 추가 ---
         folium.Marker(
             location=[lat, lon],
@@ -64,7 +65,7 @@ with tab1:
             popup="내 위치입니다.",
             icon=folium.Icon(color="blue", icon="user")
         ).add_to(m)
-        m = folium.Map(location=[lat, lon],zoom_start=12)
+        
     
         for i in data.index:
             name = data.loc[i, '소방서이름 ']
