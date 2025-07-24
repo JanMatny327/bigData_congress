@@ -63,6 +63,11 @@ with st.expander('소방 안전 지도란?'):
     st.write('소방 안전 지도란?' +
     '\n시민들이 주변의 있는 소방서를 빠르게 확인하여 사고를 줄일 수 있는 지도입니다.' +
     '\n또한 과거의 사고 정보을 확인하여 안전사고를 미리 예방할 수 있습니다.')
+df = pd.read_csv("부주의에_의한_화재발생.csv")
+
+fig = px.bar(df, x='사고원인', y='발생횟수', title="2022년도 서울시 부주의로 인한 화재사고 원인")
+
+st.chart(fig)
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
@@ -136,3 +141,4 @@ with st.sidebar:
                 # 회원가입 성공 후 입력 필드 초기화
                 st.session_state.new_username_input = ""
                 st.session_state.new_password_input = ""
+
