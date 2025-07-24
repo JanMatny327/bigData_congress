@@ -49,7 +49,7 @@ with tab1:
 
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
-        data2 = pd.read_csv("https://github.com/JanMatny327/bigData_congress/blob/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv", encoding='utf-8', on_bad_lines='skip')
+        data2 = pd.read_csv("https://github.com/JanMatny327/bigData_congress/blob/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv", sep='\t')
         # --- 내 위치 가져오기 ---
         location = get_geolocation()
         if location:
@@ -75,8 +75,8 @@ with tab1:
             name = data2.loc[i, '소방서']
             lat = float(data2.loc[i, '위도'])
             lon = float(data2.loc[i, '경도'])
-            address = (data2.loc[i, '주소'])
-            number = (data2.loc[i, '전화번호'])
+            address = data2.loc[i, '주소']
+            number = data2.loc[i, '전화번호']
             image = "https://cdn-icons-png.flaticon.com/512/2801/2801574.png"
             popup_html = f"""
             <div style=width:"200px">
