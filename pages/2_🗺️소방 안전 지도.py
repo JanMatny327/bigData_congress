@@ -122,7 +122,7 @@ with tab1:
                 icon=icon
             ).add_to(m)
 
-        sf.st_folium(m, width=1920, height=600)
+    sf.st_folium(m, width=1920, height=600)
 
     except Exception as e:
         st.error(f"🚨 지도 로딩 중 오류가 발생했습니다: {e}")
