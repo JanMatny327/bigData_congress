@@ -49,7 +49,7 @@ with tab1:
 
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
-        data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/소방청_시도_소방서_현황5.csv")
+        data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/fire_station_status_v5.csv")
         # --- 내 위치 가져오기 ---
         location = get_geolocation()
         if location:
