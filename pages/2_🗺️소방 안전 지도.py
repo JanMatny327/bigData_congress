@@ -49,7 +49,7 @@ with tab1:
 
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
-        data2 = pd.read_csv("https://github.com/JanMatny327/bigData_congress/blob/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv", sep='\t')
+        data2 = pd.read_csv("https://github.com/JanMatny327/bigData_congress/blob/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv", encoding='utf-8')
         # --- 내 위치 가져오기 ---
         location = get_geolocation()
         if location:
@@ -72,7 +72,7 @@ with tab1:
 
         # 소방서 마커
         for i in data2.index:
-            name = (data2.loc[i, '소방서'])
+            name = data2.loc[i, '소방서']
             lat = float(data2.loc[i, '위도'])
             lon = float(data2.loc[i, '경도'])
             address = (data2.loc[i, '주소'])
