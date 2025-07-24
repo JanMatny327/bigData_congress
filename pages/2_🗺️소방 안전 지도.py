@@ -103,7 +103,7 @@ with tab1:
             lon_ = data.loc[i, '경도']
             address = data.loc[i, '소방서주소']
             number = data.loc[i, '전화번호']
-            url = data.loc[i, '소방서 이미지 주소']
+            url = data.loc[i, '소방서_이미지_주소']
             popup_html = f"""
             <div style=width:"200px">
                 <b>소방서 명:</b> {name}<br>
