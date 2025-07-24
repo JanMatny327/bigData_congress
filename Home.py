@@ -68,7 +68,7 @@ df = pd.read_csv("부주의에_의한_화재발생.csv")
 
 fig = px.bar(df, x='사고원인', y='발생횟수', title="2022년도 서울시 부주의로 인한 화재사고 원인")
 
-st.chart(fig)
+st.bar_chart(fig)
 
 # --- 웹 로고 (사이드바로 이동) ---
 with st.sidebar:
