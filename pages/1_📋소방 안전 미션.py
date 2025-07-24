@@ -7,14 +7,14 @@ import datetime as dt
 import random
 
 # --- 페이지 설정 ---
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="소방 안전 미션")
 
 if not st.session_state.get("logged_in"):
     st.warning("⚠️ 로그인 후 이용 가능합니다.")
     st.stop()
 
 with st.sidebar:
-    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDS_일개미들.png", width=150) # 로고를 사이드바 상단에 배치
+    st.image("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/TDS_일개미들.png", width=150)
     st.markdown("""
         <style>
             [alt=Logo] {
@@ -25,25 +25,22 @@ with st.sidebar:
     
     if st.session_state.logged_in:
         st.success(f"환영합니다, {st.session_state.username}님!")
-        
         if st.button("로그아웃"):
             st.session_state.logged_in = False
             st.session_state.username = ""
-            # 로그아웃 시 입력 필드 초기화 (필요하다면)
             st.session_state.login_username_input = ""
             st.session_state.login_password_input = ""
             st.session_state.new_username_input = ""
             st.session_state.new_password_input = ""
-            st.rerun() # 로그아웃 후 페이지 새로고침
-            
-# ✅ 사용자 세션 초기화
+            st.experimental_rerun()
+
+# 사용자 세션 기본값 설정
 if "username" not in st.session_state:
     st.session_state.username = "guest"
 
-# ✅ 미션 완료 여부 체크 함수
+# 미션 완료 체크 함수
 def mission_page(mission, mission_num):
-    key = f"mission_done_{mission_num}_{st.session_state.username}"  # 사용자별 완료 여부 저장
-
+    key = f"mission_done_{mission_num}_{st.session_state.username}"
     if key not in st.session_state:
         st.session_state[key] = False
 
@@ -80,9 +77,6 @@ def mission_page(mission, mission_num):
             st.session_state[key] = True
             st.success("관리자가 검토 중입니다. 검토 후 포인트가 지급될 예정입니다.")
 
-# 페이지 타이틀 설정 (중복 제거 or 위치 조정)
-st.set_page_config(page_title="소방 안전 미션")
-
 # 미션 리스트
 missions = [
     {"id":"photo","name":"소화기 사진 업로드!","detail":"가정 내 소화기를 찾아 사진을 업로드 해주세요."},
@@ -111,12 +105,15 @@ missions = [
     {"id":"action", "name":"가스 밸브 확인하기", "detail":"가스 밸브가 잠겨져 있는지 확인하세요!"}
 ]
 
-# 오늘의 미션 5개 무작위 선택
-seed = int(dt.date.today().strftime("%Y%m%d"))
+# 현재 년월일시분 기준 seed 생성
+now = dt.datetime.now()
+seed = int(now.strftime("%Y%m%d%H%M"))
 random.seed(seed)
 daily_missions = random.sample(missions, 5)
 
 st.header('🔥 오늘의 미션 리스트')
+# 남은 시간 표시
+st.info("미션은 1분마다 갱신됩니다.")
 
 mission_names = [ms["name"] for ms in daily_missions]
 selected_mission = st.selectbox("수행할 미션을 선택하세요", mission_names)
