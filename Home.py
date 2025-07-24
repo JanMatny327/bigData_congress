@@ -54,7 +54,7 @@ if not st.session_state.loading_done:
 st.image('https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/to-do-safe.png', width=1500)
 
 # --- 메인 Home Page에 시각화 데이터 ---
-st.header('부주의로 인한 사고는 누군가에게 지워지지 않는 피해를 줍니다.)
+st.header('부주의로 인한 사고는 누군가에게 지워지지 않는 피해를 줍니다.')
 with st.expander('부주의로 인한 화재발생(서울)'):
     fireData = pd.read_csv("부주의에_의한_화재발생.csv")
 
