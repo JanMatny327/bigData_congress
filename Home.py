@@ -5,6 +5,7 @@ import streamlit_folium as sf
 import time
 import datetime as dt
 import random
+import plotly.express as px
 
 st.set_page_config(layout='wide')
 
