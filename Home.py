@@ -53,13 +53,14 @@ if not st.session_state.loading_done:
 # --- 메인 Home Page ---
 st.image('https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/to-do-safe.png', width=1500)
 
-st.header('To do Safe : 미션을 깨면서 안전을 점검하세요')
 # --- 메인 Home Page에 시각화 데이터 ---
+st.header('부주의로 인한 사고는 누군가에게 지워지지 않는 피해를 줍니다.)
 with st.expander('부주의로 인한 화재발생(서울)'):
     fireData = pd.read_csv("부주의에_의한_화재발생.csv")
 
     st.bar_chart(fireData, x='사고원인', y='발생횟수')
 
+st.header('To do Safe : 미션을 깨면서 안전을 점검하세요')
 with st.expander('TDS(To Do Safe) 사이트란?'):
     st.write('To Do Safe 사이트' +
     '\n시민들의 소방안전에 대한 경각심을 깨워주고 점검하는 습관을 들일 수 있게 도와주는 사이트입니다.' +
