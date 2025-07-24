@@ -1,8 +1,6 @@
 streamlit>=1.36.0
 pandas
 folium
-folium.features
-folium.plugins
 streamlit-folium
 Pillow
 streamlit-js-eval
