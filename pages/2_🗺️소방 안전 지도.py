@@ -99,7 +99,7 @@ with tab1:
             ).add_to(m)
             
         for i in data.index:
-            name = data.loc[i, '소방서이름']
+            name = data.loc[i, '소방서이름 ']
             lat = data.loc[i, '위도']
             lon = data.loc[i, '경도']
             address = data.loc[i, '소방서주소']
