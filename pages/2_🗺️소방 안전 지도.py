@@ -9,6 +9,7 @@ from folium.features import CustomIcon
 from folium.plugins import HeatMap
 import json
 import requests
+from streamlit_js_eval import get_geolocation  # 🔹 사용자 위치(GPS) 가져오기용
 
 # --- 페이지 설정 ---
 st.set_page_config(layout="wide")
@@ -49,8 +50,21 @@ with tab1:
     st.header('소방 안전 지도')
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
+        # --- 내 위치 가져오기 (GPS) ---
+        location = get_geolocation()  # 🔹 streamlit-js-eval 라이브러리 이용
 
-        m = folium.Map(location=[37.5665, 126.9780],zoom_start=12)
+        if location:
+            lat = location['coords']['latitude']
+            lon = location['coords']['longitude']
+        
+        # --- 내 위치 마커 추가 ---
+        folium.Marker(
+            location=[lat, lon],
+            tooltip="📍 내 위치",
+            popup="내 위치입니다.",
+            icon=folium.Icon(color="blue", icon="user")
+        ).add_to(m)
+        m = folium.Map(location=[lat, lon],zoom_start=12)
     
         for i in data.index:
             name = data.loc[i, '소방서이름 ']
