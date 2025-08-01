@@ -41,6 +41,9 @@ with st.sidebar:
 # --- 탭 구성 ---
 tab1, tab2 = st.tabs(['🧯 소방 안전 지도', '🔥 사건사고 지도'])
 
+data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
+data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv")
+
 # --------------------------------------------------------------------------------
 # 🔸 소방 안전 지도 탭
 # --------------------------------------------------------------------------------
@@ -48,9 +51,6 @@ with tab1:
     st.header('🧯 소방 안전 지도')
 
     try:
-        data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
-        data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv")
-
         districts = sorted(data['본부명'].unique())
 
         col1 = st.columns(1)
