@@ -50,15 +50,15 @@ with tab1:
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
         data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv")
-        result = data + data2
-        districts = sorted(result['본부명'].unique())
+        result = pd.concat([data, data2], ignore_index=True)
+        districts = sorted(result['본부명'].dropna().unique())
 
-        col1 = st.columns(1)
+        col1 = st.columns(1)[0]
         with col1:
             selected_cause = st.selectbox('사고 원인을 선택하세요:', districts)
-        
-        filtered = result[(result['본부명'] == districts)]
-        
+
+        filtered = result[result['본부명'] == selected_cause]
+
         # 내 위치 가져오기
         location = get_geolocation()
         if location:
@@ -130,17 +130,15 @@ with tab1:
                 icon=icon
             ).add_to(m)
 
-        if not filtered.empty:
+        # 중심좌표 재조정
+        if not filtered.empty and '위도' in filtered.columns and '경도' in filtered.columns:
             center = [filtered['위도'].mean(), filtered['경도'].mean()]
-        else:
-            center = [37.5665, 126.9780]
+            m = folium.Map(location=center, zoom_start=14.5)
 
-        m = folium.Map(location=center, zoom_start=14.5)
         sf.st_folium(m, width=1920, height=600)
 
     except Exception as e:
         st.error(f"🚨 지도 로딩 중 오류가 발생했습니다: {e}")
-
 
 # --------------------------------------------------------------------------------
 # 🔸 사건사고 지도 탭
