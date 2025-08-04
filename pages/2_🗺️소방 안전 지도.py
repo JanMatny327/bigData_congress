@@ -48,32 +48,37 @@ with tab1:
     st.header('🧯 소방 안전 지도')
 
     try:
+        # 데이터 로드
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
         data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv")
         result = pd.concat([data, data2], ignore_index=True)
         districts = sorted(result['본부명'].dropna().unique())
 
+        # 선택 박스
         col1 = st.columns(1)[0]
         with col1:
             selected_cause = st.selectbox('사고 원인을 선택하세요:', districts)
 
         filtered = result[result['본부명'] == selected_cause]
 
-        # 내 위치 가져오기
+        # 위치 설정 (임시: 서울시청 좌표)
+        def get_geolocation():
+            try:
+                res = requests.get("https://ipapi.co/json/").json()
+                return {'coords': {'latitude': res['latitude'], 'longitude': res['longitude']}}
+            except:
+                return None
+
         location = get_geolocation()
         if location:
             lat = location['coords']['latitude']
             lon = location['coords']['longitude']
         else:
-            lat, lon = 37.5665, 126.9780
+            lat, lon = 37.5665, 126.9780  # 서울시청
 
+        # 지도 기본 생성
         default_center = st.session_state.get("center_map", [lat, lon])
         m = folium.Map(location=default_center, zoom_start=12)
-
-        # 중심좌표 재조정
-        if not filtered.empty and '위도' in filtered.columns and '경도' in filtered.columns:
-            center = [filtered['위도'].mean(), filtered['경도'].mean()]
-            m = folium.Map(location=center, zoom_start=14.5)
 
         # 내 위치 마커
         folium.Marker(
@@ -83,63 +88,66 @@ with tab1:
             icon=folium.Icon(color="blue", icon="user")
         ).add_to(m)
 
+        # 데이터2 마커
         for i in data2.index:
-            name = data2.loc[i, '소방서']
-            lat = float(data2.loc[i, '위도'])
-            lon = float(data2.loc[i, '경도'])
-            address = (data2.loc[i, '주소'])
-            number = (data2.loc[i, '전화번호'])
-            image = "https://cdn-icons-png.flaticon.com/512/2801/2801574.png"
-            popup_html = f"""
-            <div style=width:"200px">
-                <b>소방서 명:</b> {name}<br>
-                <b>소방서 주소:</b> {address}<br>
-                <b>소방서 전화번호:</b> {number}<br>
-                <img src="{image}" width="300px">
-            </div>
-            """
-            tooltip = name
-            popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
-            popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
-            icon = CustomIcon("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/소방서.png", icon_size=(40, 40))
-            folium.Marker(
-                location=[lat, lon],
-                tooltip=tooltip,
-                popup=popup,
-                icon=icon
-            ).add_to(m)
-            
-        for i in data.index:
-            name = data.loc[i, '본부명']
-            lat = data.loc[i, '위도']
-            lon = data.loc[i, '경도']
-            address = data.loc[i, '소방서주소']
-            number = data.loc[i,'전화번호']
-            url = data.loc[i, '소방서_이미지_주소']
-            image_url = f"{url}"
-            popup_html = f"""
-            <div style=width:"200px">
-                <b>소방서 명:</b> {name}<br>
-                <b>소방서 주소:</b> {address}<br>
-                <b>소방서 전화번호:</b> {number}<br>
-                <img src="{image_url}" width="300px">
-            </div>
-            """
-            tooltip = name
-            popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
-            popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
-            icon = CustomIcon("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/소방서.png", icon_size=(40, 40))
-            folium.Marker(
-                location=[lat, lon],
-                tooltip=tooltip,
-                popup=popup,
-                icon=icon
-            ).add_to(m)
+            try:
+                name = data2.loc[i, '소방서']
+                lat2 = float(data2.loc[i, '위도'])
+                lon2 = float(data2.loc[i, '경도'])
+                address = data2.loc[i, '주소']
+                number = data2.loc[i, '전화번호']
+                image = "https://cdn-icons-png.flaticon.com/512/2801/2801574.png"
 
-        sf.st_folium(m, width=1920, height=600)
+                popup_html = f"""
+                <div style="width:200px">
+                    <b>소방서 명:</b> {name}<br>
+                    <b>주소:</b> {address}<br>
+                    <b>전화번호:</b> {number}<br>
+                    <img src="{image}" width="200px">
+                </div>
+                """
+                popup = folium.Popup(folium.IFrame(popup_html, width=220, height=250), max_width=250)
+                icon = CustomIcon("소방서.png", icon_size=(40, 40))
+                folium.Marker(location=[lat2, lon2], tooltip=name, popup=popup, icon=icon).add_to(m)
+            except Exception as e:
+                st.warning(f"data2 마커 오류: {e}")
+
+        # 데이터1 마커
+        for i in data.index:
+            try:
+                name = data.loc[i, '본부명']
+                lat1 = float(data.loc[i, '위도'])
+                lon1 = float(data.loc[i, '경도'])
+                address = data.loc[i, '소방서주소']
+                number = data.loc[i, '전화번호']
+                url = data.loc[i, '소방서_이미지_주소']
+
+                popup_html = f"""
+                <div style="width:200px">
+                    <b>소방서 명:</b> {name}<br>
+                    <b>주소:</b> {address}<br>
+                    <b>전화번호:</b> {number}<br>
+                    <img src="{url}" width="200px">
+                </div>
+                """
+                popup = folium.Popup(folium.IFrame(popup_html, width=220, height=250), max_width=250)
+                icon = CustomIcon("소방서.png", icon_size=(40, 40))
+                folium.Marker(location=[lat1, lon1], tooltip=name, popup=popup, icon=icon).add_to(m)
+            except Exception as e:
+                st.warning(f"data 마커 오류: {e}")
+
+        # 중심 좌표만 이동 (새로 생성 ❌)
+        if not filtered.empty and '위도' in filtered.columns and '경도' in filtered.columns:
+            center = [filtered['위도'].mean(), filtered['경도'].mean()]
+            m.location = center
+            m.zoom_start = 14.5
+
+        # 지도 출력
+        st_folium(m, width=1920, height=600)
 
     except Exception as e:
         st.error(f"🚨 지도 로딩 중 오류가 발생했습니다: {e}")
+
 
 # --------------------------------------------------------------------------------
 # 🔸 사건사고 지도 탭
