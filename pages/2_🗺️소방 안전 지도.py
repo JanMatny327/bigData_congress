@@ -79,12 +79,12 @@ with tab1:
         ).add_to(m)
 
         # data2 소방서 마커
-        for i in data2.index:
-            name = data2.loc[i, '소방서']
-            lat_2 = float(data2.loc[i, '위도'])
-            lon_2 = float(data2.loc[i, '경도'])
-            address = data2.loc[i, '주소']
-            number = data2.loc[i, '전화번호']
+        for i in result.index:
+            name = result.loc[i, '소방서']
+            lat_2 = float(result.loc[i, '위도'])
+            lon_2 = float(result.loc[i, '경도'])
+            address = result.loc[i, '주소']
+            number = result.loc[i, '전화번호']
             image = "https://cdn-icons-png.flaticon.com/512/2801/2801574.png"
             popup_html = f"""
             <div style=width:"200px">
@@ -105,30 +105,30 @@ with tab1:
             ).add_to(m)
 
         # data 소방서 마커
-        for i in data.index:
-            name = data.loc[i, '소방서이름 '].strip()
-            lat_ = data.loc[i, '위도']
-            lon_ = data.loc[i, '경도']
-            address = data.loc[i, '소방서주소']
-            number = data.loc[i, '전화번호']
-            url = data.loc[i, '소방서_이미지_주소']
-            popup_html = f"""
-            <div style=width:"200px">
-                <b>소방서 명:</b> {name}<br>
-                <b>소방서 주소:</b> {address}<br>
-                <b>소방서 전화번호:</b> {number}<br>
-                <img src="{url}" width="300px">
-            </div>
-            """
-            tooltip = name
-            popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
-            icon = CustomIcon("소방서.png", icon_size=(40, 40))
-            folium.Marker(
-                location=[lat_, lon_],
-                tooltip=tooltip,
-                popup=popup,
-                icon=icon
-            ).add_to(m)
+        # for i in data.index:
+        #     name = data.loc[i, '소방서이름 '].strip()
+        #     lat_ = data.loc[i, '위도']
+        #     lon_ = data.loc[i, '경도']
+        #     address = data.loc[i, '소방서주소']
+        #     number = data.loc[i, '전화번호']
+        #     url = data.loc[i, '소방서_이미지_주소']
+        #     popup_html = f"""
+        #     <div style=width:"200px">
+        #         <b>소방서 명:</b> {name}<br>
+        #         <b>소방서 주소:</b> {address}<br>
+        #         <b>소방서 전화번호:</b> {number}<br>
+        #         <img src="{url}" width="300px">
+        #     </div>
+        #     """
+        #     tooltip = name
+        #     popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
+        #     icon = CustomIcon("소방서.png", icon_size=(40, 40))
+        #     folium.Marker(
+        #         location=[lat_, lon_],
+        #         tooltip=tooltip,
+        #         popup=popup,
+        #         icon=icon
+        #     ).add_to(m)
 
         # 중심좌표 재조정
         if not filtered.empty and '위도' in filtered.columns and '경도' in filtered.columns:
