@@ -71,12 +71,12 @@ with tab1:
         m = folium.Map(location=default_center, zoom_start=12)
 
         # 내 위치 마커
-        folium.Marker(
-            location=[lat, lon],
-            tooltip="📍 내 위치",
-            popup="내 위치입니다.",
-            icon=folium.Icon(color="blue", icon="user")
-        ).add_to(m)
+        # folium.Marker(
+        #     location=[lat, lon],
+        #     tooltip="📍 내 위치",
+        #     popup="내 위치입니다.",
+        #     icon=folium.Icon(color="blue", icon="user")
+        # ).add_to(m)
 
         for i in data2.index:
             name = data2.loc[i, '소방서']
