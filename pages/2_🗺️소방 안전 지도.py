@@ -96,7 +96,7 @@ with tab1:
             tooltip = name
             popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
             popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
-            icon = CustomIcon("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/assets/소방서.png", icon_size=(40, 40))
+            icon = CustomIcon("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/소방서.png", icon_size=(40, 40))
             folium.Marker(
                 location=[lat, lon],
                 tooltip=tooltip,
@@ -123,7 +123,7 @@ with tab1:
             tooltip = name
             popup_text = f"소방서 명: {name}<br>소방서 주소: {address}<br>소방서 전화번호:</b> {number}<br>"
             popup = folium.Popup(folium.IFrame(popup_html, width=355, height=310), max_width=355)
-            icon = CustomIcon("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/assets/소방서.png", icon_size=(40, 40))
+            icon = CustomIcon("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/소방서.png", icon_size=(40, 40))
             folium.Marker(
                 location=[lat, lon],
                 tooltip=tooltip,
