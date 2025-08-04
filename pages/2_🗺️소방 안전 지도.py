@@ -50,7 +50,6 @@ with tab1:
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
         data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv")
-        result = pd.concat([data, data2], ignore_index=True)
         districts = sorted(result['본부명'].dropna().unique())
 
         col1 = st.columns(1)[0]
@@ -71,12 +70,12 @@ with tab1:
         m = folium.Map(location=default_center, zoom_start=12)
 
         # 내 위치 마커
-        # folium.Marker(
-        #     location=[lat, lon],
-        #     tooltip="📍 내 위치",
-        #     popup="내 위치입니다.",
-        #     icon=folium.Icon(color="blue", icon="user")
-        # ).add_to(m)
+        folium.Marker(
+            location=[lat, lon],
+            tooltip="📍 내 위치",
+            popup="내 위치입니다.",
+            icon=folium.Icon(color="blue", icon="user")
+        ).add_to(m)
 
         for i in data2.index:
             name = data2.loc[i, '소방서']
@@ -105,7 +104,7 @@ with tab1:
             ).add_to(m)
             
         for i in data.index:
-            name = data.loc[i, '소방서이름 ']
+            name = data.loc[i, '본부명']
             lat = data.loc[i, '위도']
             lon = data.loc[i, '경도']
             address = data.loc[i, '소방서주소']
