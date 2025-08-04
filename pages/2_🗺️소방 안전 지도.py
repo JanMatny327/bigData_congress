@@ -70,6 +70,11 @@ with tab1:
         default_center = st.session_state.get("center_map", [lat, lon])
         m = folium.Map(location=default_center, zoom_start=12)
 
+        # 중심좌표 재조정
+        if not filtered.empty and '위도' in filtered.columns and '경도' in filtered.columns:
+            center = [filtered['위도'].mean(), filtered['경도'].mean()]
+            m = folium.Map(location=center, zoom_start=14.5)
+
         # 내 위치 마커
         folium.Marker(
             location=[lat, lon],
@@ -130,11 +135,6 @@ with tab1:
                 popup=popup,
                 icon=icon
             ).add_to(m)
-            
-        # 중심좌표 재조정
-        if not filtered.empty and '위도' in filtered.columns and '경도' in filtered.columns:
-            center = [filtered['위도'].mean(), filtered['경도'].mean()]
-            m = folium.Map(location=center, zoom_start=14.5)
 
         sf.st_folium(m, width=1920, height=600)
 
