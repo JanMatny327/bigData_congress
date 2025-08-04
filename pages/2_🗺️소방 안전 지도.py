@@ -110,7 +110,7 @@ with tab1:
             lon = data.loc[i, '경도']
             address = data.loc[i, '소방서주소']
             number = data.loc[i,'전화번호']
-            url = data.loc[i, '소방서 이미지 주소']
+            url = data.loc[i, '소방서 이미지 주소 ']
             image_url = f"{url}"
             popup_html = f"""
             <div style=width:"200px">
