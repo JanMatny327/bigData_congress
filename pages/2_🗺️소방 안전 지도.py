@@ -50,7 +50,7 @@ with tab1:
     try:
         data = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/main/pages/seoul_119_data.csv")
         data2 = pd.read_csv("https://raw.githubusercontent.com/JanMatny327/bigData_congress/5383d52756a325ed369f401fb521aac43b3e3865/fire_station_status_v5.csv")
-        result = pd.concat([data, data2], ignore=True)
+        result = pd.concat([data, data2], ignore_index=True)
         districts = sorted(result['본부명'].dropna().unique())
 
         col1 = st.columns(1)[0]
